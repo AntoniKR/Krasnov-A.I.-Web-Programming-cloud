@@ -1,0 +1,53 @@
+﻿@model IEnumerable<FinancialAssetsApp.Models.Stock>
+
+<h2>My stocks</h2>
+
+<div class="container">
+    <table class="table table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th>Тикер</th>
+                <th>название компании</th>
+                <th>Цена</th>
+                <th>Дата добавления </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Ticker</td>
+                    <td>@item.NameCompany</td>
+                    <td>@item.Price $</td>
+                    <td>@item.DateAddStock.ToString("yyyy-MM-dd")</td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+</div>
+
+<h2>Круговая диаграмма распрееделения акций</h2>
+<div>
+    <canvas id="myChart"></canvas>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const ctx = document.getElementById('myChart');
+
+    fetch('/Stocks/GetChart')
+        .then(response=> response.json())
+        .then(data => {
+            new Chart(ctx, {
+                  type: 'pie',
+                  data: {
+                    labels: data.map(d => d.Ticker),
+                    datasets: [{
+                      data: data.map(d => d.total),
+                    }]
+                  },
+
+                });
+        })
+</script>

@@ -1,0 +1,21 @@
+﻿@model FinancialAssetsApp.Models.Stock
+
+<div class="container">
+    <h2> Добавить акцию</h2>
+    <form asp-action="Create" method="post">
+        <div>
+            <label asp-for="Ticker" class="form-label">Тикер</label>
+            <input asp-for="Ticker" class="form-control"/>  
+        </div>
+        <div>
+            <label asp-for="NameCompany" class="form-label">Название компании</label>
+            <input asp-for="NameCompany" class="form-control"/>
+        </div>
+        <div>
+            <label asp-for="Price" class="form-label">Цена покупки</label>
+            <input asp-for="Price" class="form-control"/>
+        </div>
+        <button type="submit" class="btn btn-primary">Добавить акцию</button>
+    </form>
+</div>
+

@@ -4,18 +4,38 @@
     <h2> Добавить акцию</h2>
     <form asp-action="Create" method="post">
         <div>
-            <label asp-for="Ticker" class="form-label">Тикер</label>
-            <input asp-for="Ticker" class="form-control"/ >  
+            <label asp-for="Ticker" class="form-label">Тикер *</label>
+            <input asp-for="Ticker" class="form-control"/>
+            <span asp-validation-for="Ticker" class="text-danger"></span>
+
         </div>
         <div>
             <label asp-for="NameCompany" class="form-label">Название компании</label>
             <input asp-for="NameCompany" class="form-control"/>
         </div>
         <div>
-            <label asp-for="Price" class="form-label">Цена покупки</label>
+            <label asp-for="Country" class="form-label">Страна компании *</label>
+            <select asp-for="Country" class="form-control" asp-items="ViewBag.Countries">
+                <option value="" disabled selected hidden>- Выберите страну</option>
+            </select>
+            <span asp-validation-for="Country" class="text-danger"></span>
+        </div>
+        <div>
+            <label asp-for="Price" class="form-label">Цена покупки *</label>
             <input asp-for="Price" class="form-control"/>
+            <span asp-validation-for="Price" class="text-danger"></span>
+
+        </div>
+        <div>
+            <label asp-for="AmountStock" class="form-label">Количество *</label>
+            <input asp-for="AmountStock" class="form-control" />
+            <span asp-validation-for="AmountStock" class="text-danger"></span>
+
         </div>
         <button type="submit" class="btn btn-primary">Добавить акцию</button>
     </form>
+    <div>
+        * - Обязательные поля для заполнения
+    </div>
 </div>
 

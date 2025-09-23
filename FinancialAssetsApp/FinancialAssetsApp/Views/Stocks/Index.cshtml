@@ -7,8 +7,11 @@
         <thead class="table-light">
             <tr>
                 <th>Тикер</th>
-                <th>название компании</th>
+                <th>Название компании</th>
+                <th>Страна компании</th>
                 <th>Цена</th>
+                <th>Количество</th>
+                <th>Стоимость</th>
                 <th>Дата добавления </th>
             </tr>
         </thead>
@@ -18,7 +21,10 @@
                 <tr>
                     <td>@item.Ticker</td>
                     <td>@item.NameCompany</td>
+                    <td>@item.Country</td>
                     <td>@item.Price $</td>
+                    <td>@item.AmountStock</td>
+                    <td>@item.SumStocks $</td>
                     <td>@item.DateAddStock.ToString("yyyy-MM-dd")</td>
                 </tr>
             }
@@ -27,27 +33,27 @@
     </table>
 </div>
 
-<h2>Круговая диаграмма распрееделения акций</h2>
+<h2>Круговая диаграмма распределения акций</h2>
 <div>
-    <canvas id="myChart"></canvas>
+    <canvas style="max-width: 450px; max-height: 450px" id="myChart"></canvas>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
     const ctx = document.getElementById('myChart');
 
-    fetch('/Stocks/GetChart')
+    fetch('/Stocks/GetChart')   // Запрос к методу GetChart
         .then(response=> response.json())
         .then(data => {
             new Chart(ctx, {
                   type: 'pie',
                   data: {
-                    labels: data.map(d => d.Ticker),
+                    labels: data.map(d => d.ticker),
                     datasets: [{
                       data: data.map(d => d.total),
                     }]
                   },
 
-                });
+            });
         })
 </script>

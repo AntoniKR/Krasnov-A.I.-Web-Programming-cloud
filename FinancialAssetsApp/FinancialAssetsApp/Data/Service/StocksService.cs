@@ -1,5 +1,4 @@
-﻿
-using FinancialAssetsApp.Models;
+﻿using FinancialAssetsApp.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace FinancialAssetsApp.Data.Service
@@ -28,7 +27,7 @@ namespace FinancialAssetsApp.Data.Service
         {
             var data = _context.Stocks.GroupBy(e => e.Ticker).Select(g => new
             {
-                Ticket = g.Key,
+                Ticker = g.Key,
                 Total = g.Sum(e => e.Price)
             });
             return data;

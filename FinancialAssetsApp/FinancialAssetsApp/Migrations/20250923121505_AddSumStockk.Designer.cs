@@ -3,6 +3,7 @@ using System;
 using FinancialAssetsApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FinancialAssetsApp.Migrations
 {
     [DbContext(typeof(FinanceDbContext))]
-    partial class FinanceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250923121505_AddSumStockk")]
+    partial class AddSumStockk
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,6 +44,7 @@ namespace FinancialAssetsApp.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("NameCompany")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<decimal>("Price")
@@ -51,8 +55,7 @@ namespace FinancialAssetsApp.Migrations
 
                     b.Property<string>("Ticker")
                         .IsRequired()
-                        .HasMaxLength(4)
-                        .HasColumnType("character varying(4)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 

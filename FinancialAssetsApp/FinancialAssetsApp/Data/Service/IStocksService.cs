@@ -1,4 +1,5 @@
 ﻿using FinancialAssetsApp.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FinancialAssetsApp.Data.Service
 {
@@ -6,6 +7,12 @@ namespace FinancialAssetsApp.Data.Service
     {
         Task<IEnumerable<Stock>> GetAll();
         Task Add(Stock stock);
-        IQueryable GetChartDate();
+        Task<Stock>GetStockById(int id);
+        Task Delete(int id);
+        IQueryable GetChartTicker();
+        IQueryable GetChartCountry();
+
+        Task FixOldStocks();
+
     }
 }

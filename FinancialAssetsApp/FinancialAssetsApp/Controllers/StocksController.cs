@@ -14,20 +14,21 @@ namespace FinancialAssetsApp.Controllers
         {
             _stocksService = stocksService;
         }
-        public async Task<IActionResult> Index()
+        
+        public async Task<IActionResult> Index()    // Список всех акций
         {
             var stocks = await _stocksService.GetAll();  // Перечисление всех данных из БД
             return View(stocks);
         }
-        private void FillListCountries()
+        private void FillListCountries()    // Метод для списка стран 
         {
             ViewBag.Countries = new List<SelectListItem>        // Создание списка для выбора страны компании
             {
-                new SelectListItem {Value = "Russia", Text = "Россия"},
-                new SelectListItem {Value="USA", Text = "США"}
+                new SelectListItem {Value = "Россия", Text = "Россия"},
+                new SelectListItem {Value="США", Text = "США"}
             };
         }
-        public IActionResult Create()
+        public IActionResult Create()   // Страница добавления акции
         {
             FillListCountries();
             return View();
@@ -37,18 +38,59 @@ namespace FinancialAssetsApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                stock.SumStocks = stock.Price * stock.AmountStock;
                 await _stocksService.Add(stock);
                 return RedirectToAction("Index");
             }
             FillListCountries();
             return View(stock);
         }
-        public IActionResult GetChart()
+        public async Task<IActionResult> Delete(int id)
         {
-            var data = _stocksService.GetChartDate();
+            var stock = await _stocksService.GetStockById(id);
+            if (stock == null)
+                return NotFound();
+            return View(stock);
+        }
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            await _stocksService.Delete(id);
+            return RedirectToAction("Index");
+        }
+        public IActionResult GetChartT()
+        {
+            var data = _stocksService.GetChartTicker();
+            return Json(data);
+        }
+        public IActionResult GetChartC()
+        {
+            var data = _stocksService.GetChartCountry();
             return Json(data);
         }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        public async Task<IActionResult> FixSums()
+        {
+            await _stocksService.FixOldStocks();
+            return RedirectToAction("Index");
+        }
     }
 }

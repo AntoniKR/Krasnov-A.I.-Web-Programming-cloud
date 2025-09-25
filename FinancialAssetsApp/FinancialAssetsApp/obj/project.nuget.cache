@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "HRwdQncc7js=",
+  "dgSpecHash": "TCumQzrHx0c=",
   "success": true,
   "projectFilePath": "C:\\Users\\ant.krasnov\\Desktop\\study\\3 семестр\\Web Cloud\\Krasnov-A.I.-Web-Programming-cloud\\FinancialAssetsApp\\FinancialAssetsApp\\FinancialAssetsApp.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ant.krasnov\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\ant.krasnov\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",
+    "C:\\Users\\ant.krasnov\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\ant.krasnov\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\ant.krasnov\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\7.0.0\\microsoft.bcl.asyncinterfaces.7.0.0.nupkg.sha512",
     "C:\\Users\\ant.krasnov\\.nuget\\packages\\microsoft.build.framework\\17.8.3\\microsoft.build.framework.17.8.3.nupkg.sha512",

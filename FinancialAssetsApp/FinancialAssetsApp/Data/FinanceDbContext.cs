@@ -8,6 +8,7 @@ namespace FinancialAssetsApp.Data
     {
         public FinanceDbContext(DbContextOptions<FinanceDbContext> options) : base(options) { } // Конструктор по умолчанию
 
-        public DbSet<Stock> Stocks { get; set; }    // Для взаимодействия с БД
+        public DbSet<Stock> Stocks { get; set; }    // Для взаимодействия с БД, хранящая акции
+        public DbSet<User> Users { get; set; } // Для взаимодействия с БД, хранящая юзеров
     }
 }

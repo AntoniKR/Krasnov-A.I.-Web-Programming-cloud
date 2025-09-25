@@ -17,6 +17,8 @@ namespace FinancialAssetsApp
 
             builder.Services.AddScoped<IStocksService, StocksService>();
 
+            builder.Services.AddHttpClient<IAssetData, AssetData>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -33,7 +35,7 @@ namespace FinancialAssetsApp
             app.UseAuthorization(); // Авторизация юзера
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Stocks}/{action=Index}/{id?}");
 
             app.Run();
         }

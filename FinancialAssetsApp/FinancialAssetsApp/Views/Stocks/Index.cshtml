@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<FinancialAssetsApp.Models.Stock>
 
-<h2>My stocks</h2>
+<h2>Мои акции</h2>
 
 <div class="container">
     <table class="table table-bordered">
@@ -12,6 +12,7 @@
                 <th>Цена</th>
                 <th>Количество</th>
                 <th>Стоимость</th>
+                <th>Стоимость в рублях</th>
                 <th>Дата добавления </th>
             </tr>
         </thead>
@@ -22,29 +23,49 @@
                     <td>@item.Ticker</td>
                     <td>@item.NameCompany</td>
                     <td>@item.Country</td>
-                    <td>@item.Price $</td>
+                    <td>@item.Price @item.CurrencySymbol</td>
                     <td>@item.AmountStock</td>
-                    <td>@item.SumStocks $</td>
+                    <td>@item.SumStocks @item.CurrencySymbol</td>
+                    <td>@item.SumStocksToRuble ₽</td>
+
                     <td>@item.DateAddStock.ToString("yyyy-MM-dd")</td>
+                    <td>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Удалить</a>
+                    </td>
                 </tr>
             }
         </tbody>
 
     </table>
+    <!--
+        <a asp-action="FixSums" class="btn btn-secondary">Пересчитать старые суммы</a> // Если добавится новый столбец в БД
+    -->
+    
+    <a asp-action="Create" class="btn btn-primary">Добавить акцию</a>
+
+
 </div>
 
 <h2>Круговая диаграмма распределения акций</h2>
-<div>
-    <canvas style="max-width: 450px; max-height: 450px" id="myChart"></canvas>
+<div class="d-flex gap-4">
+    <div class="text-center">
+        <canvas style="width: 450px; height: 450px" id="TickerPie"></canvas>
+        <h3>По Компаниям</h3>
+    </div>
+
+    <div class ="text-center">
+        <canvas style="width: 450px; height: 450px" id="CountryPie"></canvas>
+        <h3>По Странам</h3>
+    </div>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-    const ctx = document.getElementById('myChart');
-
-    fetch('/Stocks/GetChart')   // Запрос к методу GetChart
-        .then(response=> response.json())
+     fetch('/Stocks/GetChartT')   // Запрос к методу GetChart
+        .then(response => response.json())
         .then(data => {
+            const ctx = document.getElementById('TickerPie');
             new Chart(ctx, {
                   type: 'pie',
                   data: {
@@ -53,7 +74,32 @@
                       data: data.map(d => d.total),
                     }]
                   },
+                  options: {
+                      responsive: false,
+                      maintainAspectRatio: false
+                  }
+            });   
+        });
+
+    fetch('/Stocks/GetChartC')   // Запрос к методу GetChart
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('CountryPie');
+            new Chart(ctx, {
+                  type: 'pie',
+                  data: {
+                    labels: data.map(d => d.country),
+                    datasets: [{
+                      data: data.map(d => d.total),
+                    }]
+                  },
+                  options: {
+                      responsive: false,
+                      maintainAspectRatio: false
+                  }
 
             });
+
         })
+
 </script>

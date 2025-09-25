@@ -1,5 +1,12 @@
+wwwroot\css\forgpass.css
+wwwroot\css\login.css
+wwwroot\css\register.css
 wwwroot\css\site.css
 wwwroot\favicon.ico
+wwwroot\images\background_login.jpg
+wwwroot\images\forgotPassword.jpg
+wwwroot\images\register_Window.jpg
+wwwroot\images\register_Window1.jpg
 wwwroot\js\site.js
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map

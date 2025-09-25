@@ -4,20 +4,25 @@ using FinancialAssetsApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+
 
 namespace FinancialAssetsApp.Controllers
 {
     public class StocksController : Controller
     {
         private readonly IStocksService _stocksService;
+        private int CurrentUserId => HttpContext.Session.GetInt32("UserId") ?? 0;
         public StocksController(IStocksService stocksService)
         {
             _stocksService = stocksService;
         }
-        
+
         public async Task<IActionResult> Index()    // Список всех акций
         {
-            var stocks = await _stocksService.GetAll();  // Перечисление всех данных из БД
+            var stocks = await _stocksService.GetStocksByID(CurrentUserId);  // Перечисление всех данных из БД
             return View(stocks);
         }
         private void FillListCountries()    // Метод для списка стран 
@@ -36,18 +41,21 @@ namespace FinancialAssetsApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Stock stock)
         {
-            if (ModelState.IsValid)
+            stock.UserId = CurrentUserId;  //Привязка к текущему пользователю
+
+            if (!ModelState.IsValid)
             {
-                await _stocksService.Add(stock);
-                return RedirectToAction("Index");
+                FillListCountries();
+                return View(stock);
             }
-            FillListCountries();
-            return View(stock);
+
+            await _stocksService.Add(stock);
+            return RedirectToAction("Index");
         }
         public async Task<IActionResult> Delete(int id)
         {
             var stock = await _stocksService.GetStockById(id);
-            if (stock == null)
+            if (stock == null || stock.UserId != CurrentUserId)    //Проверка на акции текущего пользователя
                 return NotFound();
             return View(stock);
         }
@@ -55,32 +63,22 @@ namespace FinancialAssetsApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var stock = await _stocksService.GetStockById(id);
+            if (stock == null || stock.UserId != CurrentUserId)    //Првоерка на акции текущего пользователя
+                return NotFound();
             await _stocksService.Delete(id);
             return RedirectToAction("Index");
         }
-        public IActionResult GetChartT()
+        public async Task<IActionResult> GetChartT()
         {
-            var data = _stocksService.GetChartTicker();
+            var data = await _stocksService.GetChartTicker(CurrentUserId);
             return Json(data);
         }
-        public IActionResult GetChartC()
+        public async Task<IActionResult> GetChartC()
         {
-            var data = _stocksService.GetChartCountry();
+            var data = await _stocksService.GetChartCountry(CurrentUserId);
             return Json(data);
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

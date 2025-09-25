@@ -6,9 +6,9 @@ namespace FinancialAssetsApp.Models
     {
         public int Id { get; set; }                 // Идентификация
 
-        [Required(ErrorMessage ="Введите тикер акции")]
+        [Required(ErrorMessage = "Введите тикер акции")]
         [StringLength(4, MinimumLength = 1)]
-        public string Ticker { get; set; }          // Тикер акции 
+        public string Ticker { get; set; } = string.Empty;  // Тикер акции 
 
         public string? NameCompany { get; set; }     // Название компании
 
@@ -23,7 +23,7 @@ namespace FinancialAssetsApp.Models
         public decimal? SumStocksToRuble { get; set; }        // Стоимость акций в рублях
 
         [Required(ErrorMessage = "Введите страну акции")]
-        public string Country { get; set; }         // Страна
+        public string Country { get; set; } = string.Empty;        // Страна
         public string CurrencySymbol => Country switch   // Вывод знака в зависимости от страны
         {
             "США" => "$",
@@ -31,5 +31,9 @@ namespace FinancialAssetsApp.Models
             _ => "₽" // По умолчанию
         };
         public DateTime DateAddStock { get; set; } = DateTime.UtcNow;    // Время обновления
+
+        [Required]
+        public int UserId { get; set; }
+        public User? User { get; set; }
     }
 }

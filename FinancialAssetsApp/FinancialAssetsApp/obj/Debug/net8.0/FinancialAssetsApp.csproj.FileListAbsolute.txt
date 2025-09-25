@@ -345,3 +345,4 @@ C:\Users\ant.krasnov\Desktop\study\3 семестр\Web Cloud\Krasnov-A.I.-Web-P
 C:\Users\ant.krasnov\Desktop\study\3 семестр\Web Cloud\Krasnov-A.I.-Web-Programming-cloud\FinancialAssetsApp\FinancialAssetsApp\obj\Debug\net8.0\FinancialAssetsApp.pdb
 C:\Users\ant.krasnov\Desktop\study\3 семестр\Web Cloud\Krasnov-A.I.-Web-Programming-cloud\FinancialAssetsApp\FinancialAssetsApp\obj\Debug\net8.0\FinancialAssetsApp.genruntimeconfig.cache
 C:\Users\ant.krasnov\Desktop\study\3 семестр\Web Cloud\Krasnov-A.I.-Web-Programming-cloud\FinancialAssetsApp\FinancialAssetsApp\obj\Debug\net8.0\ref\FinancialAssetsApp.dll
+C:\Users\ant.krasnov\Desktop\study\3 семестр\Web Cloud\Krasnov-A.I.-Web-Programming-cloud\FinancialAssetsApp\FinancialAssetsApp\bin\Debug\net8.0\BCrypt.Net-Next.dll

@@ -3,6 +3,7 @@ using System;
 using FinancialAssetsApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FinancialAssetsApp.Migrations
 {
     [DbContext(typeof(FinanceDbContext))]
-    partial class FinanceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250925045426_AuthService")]
+    partial class AuthService
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,12 +60,7 @@ namespace FinancialAssetsApp.Migrations
                         .HasMaxLength(4)
                         .HasColumnType("character varying(4)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Stocks");
                 });
@@ -86,22 +84,6 @@ namespace FinancialAssetsApp.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("FinancialAssetsApp.Models.Stock", b =>
-                {
-                    b.HasOne("FinancialAssetsApp.Models.User", "User")
-                        .WithMany("Stocks")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("FinancialAssetsApp.Models.User", b =>
-                {
-                    b.Navigation("Stocks");
                 });
 #pragma warning restore 612, 618
         }

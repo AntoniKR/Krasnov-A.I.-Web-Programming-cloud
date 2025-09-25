@@ -1,4 +1,5 @@
 ﻿using FinancialAssetsApp.Models;
+using FinancialAssetsApp.Models.DTOs;
 using Microsoft.EntityFrameworkCore;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -34,7 +35,17 @@ namespace FinancialAssetsApp.Data.Service
                 await _context.SaveChangesAsync();
             }
         }
-        public async Task<Stock> GetStockById(int id) => await _context.Stocks.FindAsync(id);
+        public async Task<Stock?> GetStockById(int id)  //получение акции для удаления
+        {
+            return await _context.Stocks.FirstOrDefaultAsync(x => x.Id == id);
+        }
+        public async Task<IEnumerable<Stock>> GetStocksByID(int userId)     //Перечисление всех акций пользователя
+        {
+            var stocks = await _context.Stocks
+                .Where(s => s.UserId == userId)
+                .ToListAsync();
+            return stocks;
+        }
         
         public async Task<IEnumerable<Stock>> GetAll()
         { 
@@ -42,22 +53,30 @@ namespace FinancialAssetsApp.Data.Service
             return stocks;
         }
 
-        public IQueryable GetChartTicker()
+        public async Task<IEnumerable<ForChart>> GetChartTicker(int userId) //График по акциям
         {
-            var data = _context.Stocks.GroupBy(e => e.Ticker).Select(g => new
-            {
-                Ticker = g.Key,
-                Total = g.Sum(e => e.SumStocksToRuble)
-            });
+            var data = await _context.Stocks
+                .Where(s => s.UserId == userId)
+                .GroupBy(e => e.Ticker)
+                .Select(g => new ForChart
+                {
+                    Label = g.Key,
+                    Total = g.Sum(e => e.SumStocksToRuble) ?? 0m
+                })
+                .ToListAsync();
             return data;
         }
-        public IQueryable GetChartCountry()
+        public async Task<IEnumerable<ForChart>> GetChartCountry(int userId)    //График по странам
         {
-            var data = _context.Stocks.GroupBy(e => e.Country).Select(g => new
-            {
-                Country = g.Key,
-                Total = g.Sum(e => e.SumStocksToRuble)
-            });
+            var data = await _context.Stocks
+                .Where(s => s.UserId == userId)
+                .GroupBy(e => e.Country)
+                .Select(g => new ForChart
+                {
+                    Label = g.Key ?? "не указано",
+                    Total = g.Sum(e => e.SumStocksToRuble).GetValueOrDefault()
+                })
+                .ToListAsync();
             return data;
         }
 

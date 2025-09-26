@@ -18,7 +18,7 @@ namespace FinancialAssetsApp.Data
                 .HasOne(s => s.User)
                 .WithMany(u => u.Stocks)
                 .HasForeignKey(s => s.UserId)
-                .OnDelete(DeleteBehavior.Cascade);   //При удалении пользовтеля удаление всех акций
+                .OnDelete(DeleteBehavior.Cascade);   //При удалении пользователя удаление всех акций
         }
     }
 }

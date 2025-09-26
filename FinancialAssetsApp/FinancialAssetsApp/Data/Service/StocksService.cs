@@ -7,8 +7,8 @@ namespace FinancialAssetsApp.Data.Service
 {
     public class StocksService : IStocksService
     {
-        private readonly FinanceDbContext _context;
-        private readonly IAssetData _assetdata;
+        private readonly FinanceDbContext _context; // БД
+        private readonly IAssetData _assetdata; // Для парсинга различных курсов
 
         public StocksService(FinanceDbContext context,IAssetData assetdata)  // Конструктор
         {

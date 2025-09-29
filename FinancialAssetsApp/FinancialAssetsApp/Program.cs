@@ -17,6 +17,7 @@ namespace FinancialAssetsApp
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddScoped<IStocksService, StocksService>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddHttpClient<IAssetData, AssetData>();
             builder.Services.AddDistributedMemoryCache();
             builder.Services.AddSession(options =>  // ≈сли сесси€ была без активности 30 минут, то выход

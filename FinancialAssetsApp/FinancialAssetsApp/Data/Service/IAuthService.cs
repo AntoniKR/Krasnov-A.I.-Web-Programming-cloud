@@ -6,8 +6,10 @@ namespace FinancialAssetsApp.Data.Service
 {
     public interface IAuthService
     {
-        Task<User> GetUserByName(string username);
-        Task<bool> ValidateUser(string username, string password);
-        Task AddUser(User user, string password);
+        Task<User> GetUserByName(string username);  //Получение имени юзера
+        Task<bool> ValidateUser(string username, string password);  //Соответствие пароля и имени юзера
+        Task<User> RegisterUser(string username, string password);  // Регистрация 
+        Task<bool> ChangePassword(string username, string newPassword); // Смена пароля
+        Task<bool> UserExists(string username); // Проверка на сущ. юзера
     }
 }

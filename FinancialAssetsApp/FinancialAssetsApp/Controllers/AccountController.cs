@@ -1,15 +1,17 @@
-﻿using FinancialAssetsApp.Data;
-using Microsoft.AspNetCore.Mvc;
+﻿using BCrypt.Net;
+using FinancialAssetsApp.Data;
+using FinancialAssetsApp.Data.Service;
 using FinancialAssetsApp.Models;
-using BCrypt.Net;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 
 namespace FinancialAssetsApp.Controllers
 {
     public class AccountController : Controller //Авторизация пользователя
     {
-        private readonly FinanceDbContext _authService;
-        public AccountController(FinanceDbContext authService)  //Доступ к БД через конструктор
+        private readonly IAuthService _authService;
+        public AccountController(IAuthService authService)  //Доступ к БД через конструктор
         {
             _authService = authService;
         }
@@ -22,18 +24,17 @@ namespace FinancialAssetsApp.Controllers
         //Возвращает страницу логина
 
         [HttpPost]
-        public IActionResult Login(LoginModel model)    //Проверка для входа
+        public async Task<IActionResult> Login(LoginModel model)    //Проверка для входа
         {
             if (!ModelState.IsValid) return View(model);
-            var user = _authService.Users.FirstOrDefault(u => u.Username == model.Username);
-            if (user != null && BCrypt.Net.BCrypt.Verify(model.Password, user.PasswordHash))
-            {
-                // После успешного логина
-                HttpContext.Session.SetString("User", user.Username);
-                
-                HttpContext.Session.SetInt32("UserId", user.Id);
-                return RedirectToAction("Index", "Stocks");
 
+            if (await _authService.ValidateUser(model.Username, model.Password))
+            {
+                var user = await _authService.GetUserByName(model.Username);
+                HttpContext.Session.SetString("User", user.Username);
+                HttpContext.Session.SetInt32("UserId", user.Id);
+
+                return RedirectToAction("Index", "Stocks");
             }
 
             //если не совпадает 
@@ -46,31 +47,28 @@ namespace FinancialAssetsApp.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Register(RegisterModel model)  // Добавление нового пользователя
+        public async Task<IActionResult> Register(RegisterModel model)  // Добавление нового пользователя
         {
             if (!ModelState.IsValid) return View(model);
-            if(_authService.Users.Any(u => u.Username == model.Username))
+
+            if(await _authService.UserExists(model.Username))
             {   //Проверка на существующего пользователя
                 ModelState.AddModelError("", "Такой пользователь существует");
                 return View(model);
             }
 
-            var passwordHash = BCrypt.Net.BCrypt.HashPassword(model.Password);
-
-            var user = new User
-            {
-                Username = model.Username,
-                PasswordHash = passwordHash
-            };
-            _authService.Users.Add(user);
-            _authService.SaveChanges();
+            var user = await _authService.RegisterUser(model.Username, model.Password);
 
             HttpContext.Session.SetString("User", user.Username);
+            HttpContext.Session.SetInt32("UserId", user.Id);
+
             return RedirectToAction("Index", "Stocks");
         }
         public IActionResult Logout()   //Выход из сессии
         {
             HttpContext.Session.Remove("User");
+            HttpContext.Session.Remove("UserId");
+
             return RedirectToAction("Login");
         }
 
@@ -82,7 +80,7 @@ namespace FinancialAssetsApp.Controllers
         //Возвращает страницу логина
 
         [HttpPost]
-        public IActionResult ForgotPassword(string username, string newPassword)    //Проверка для входа
+        public async Task<IActionResult> ForgotPassword(string username, string newPassword)    //Изменение пароля
         {
             if(string.IsNullOrEmpty(username) || string.IsNullOrEmpty(newPassword))
             {
@@ -90,15 +88,12 @@ namespace FinancialAssetsApp.Controllers
                 return View();
             }
 
-            var user = _authService.Users.FirstOrDefault(u => u.Username == username);
-            if (user == null)
+            var newPassCompl = await _authService.ChangePassword(username, newPassword);
+            if(!newPassCompl)
             {
                 ModelState.AddModelError("", "Пользователь не найден");
                 return View();
             }
-
-            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);    // новый пароль
-            _authService.SaveChanges();
 
             ViewBag.Message = "Пароль изменен!";
             return RedirectToAction("Login");

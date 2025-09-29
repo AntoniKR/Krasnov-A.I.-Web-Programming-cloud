@@ -26,7 +26,7 @@ namespace FinancialAssetsApp.Data.Service
             _context.Stocks.Add(stock);
             await _context.SaveChangesAsync();  // Асинхронно сохраняем изменения в БД
         }
-        public async Task Delete(int id)
+        public async Task Delete(int id)    //Удаление акции
         {
             var stock = await _context.Stocks.FindAsync(id);
             if(stock != null)

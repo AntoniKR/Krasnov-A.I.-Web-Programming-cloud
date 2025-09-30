@@ -34,7 +34,7 @@ namespace FinancialAssetsApp.Controllers
                 HttpContext.Session.SetString("User", user.Username);
                 HttpContext.Session.SetInt32("UserId", user.Id);
 
-                return RedirectToAction("Index", "Stocks");
+                return RedirectToAction("IndexStocks", "Stocks");
             }
 
             //если не совпадает 
@@ -62,7 +62,7 @@ namespace FinancialAssetsApp.Controllers
             HttpContext.Session.SetString("User", user.Username);
             HttpContext.Session.SetInt32("UserId", user.Id);
 
-            return RedirectToAction("Index", "Stocks");
+            return RedirectToAction("IndexStocks", "Stocks");
         }
         public IActionResult Logout()   //Выход из сессии
         {
@@ -96,8 +96,7 @@ namespace FinancialAssetsApp.Controllers
             }
 
             ViewBag.Message = "Пароль изменен!";
-            return RedirectToAction("Login");
+            return RedirectToAction("IndexStocks", "Stocks");
         }
-
     }
 }

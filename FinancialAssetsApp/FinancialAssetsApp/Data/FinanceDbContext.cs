@@ -9,8 +9,8 @@ namespace FinancialAssetsApp.Data
         public FinanceDbContext(DbContextOptions<FinanceDbContext> options) : base(options) { } // Конструктор по умолчанию
 
         public DbSet<Stock> Stocks { get; set; }    // Для взаимодействия с БД, хранящая акции
-        public DbSet<User> Users { get; set; } // Для взаимодействия с БД, хранящая юзеров
-
+        public DbSet<User> Users { get; set; } // БД, хранящая юзеров
+        public DbSet<Crypto> Cryptos { get; set; } // БД, хранящая крипту
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

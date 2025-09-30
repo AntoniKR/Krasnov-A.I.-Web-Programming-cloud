@@ -1,0 +1,78 @@
+﻿@model IEnumerable<FinancialAssetsApp.Models.Crypto>
+
+<h2>Моя криптовалюта</h2>
+
+<div class="container">
+    <table class="table table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th>Тикер</th>
+                <th>Название криптовалюты</th>
+
+                <th>Цена</th>
+                <th>Количество</th>
+                <th>Стоимость</th>
+                <th>Стоимость в рублях</th>
+                <th>Дата добавления </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Ticker</td>
+                    <td>@item.NameCrypto</td>
+                    <td>@item.Price $</td>
+                    <td>@item.AmountCrypto</td>
+                    <td>@item.SumCrypto $</td>
+                    <td>@item.SumCryptoToRuble ₽</td>
+
+                    <td>@item.DateAddStock.ToString("yyyy-MM-dd")</td>
+                    <td>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Удалить</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+    <!--
+        <a asp-action="FixSums" class="btn btn-secondary">Пересчитать старые суммы</a> // Если добавится новый столбец в БД
+    -->
+
+    <a asp-action="Create" class="btn btn-primary">Добавить криптовалюту</a>
+
+
+</div>
+
+<h2>Круговая диаграмма распределения акций</h2>
+<div class="d-flex justify-content-center align-items-center flex-column">
+    <div class="text-center">
+        <canvas style="width: 450px; height: 450px" id="TickerPie"></canvas>
+        <h3>По Компаниям</h3>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    fetch('/Crypto/GetChartCrypto')   // Запрос к методу GetChart
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('TickerPie');
+            new Chart(ctx, {
+                  type: 'pie',
+                  data: {
+                    labels: data.map(d => d.label),
+                    datasets: [{
+                      data: data.map(d => d.total),
+                    }]
+                  },
+                  options: {
+                      responsive: false,
+                      maintainAspectRatio: false
+                  }
+            });
+        });
+</script>

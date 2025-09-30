@@ -3,6 +3,7 @@ using System;
 using FinancialAssetsApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FinancialAssetsApp.Migrations
 {
     [DbContext(typeof(FinanceDbContext))]
-    partial class FinanceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250930085614_ModelCrypto")]
+    partial class ModelCrypto
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,8 +33,8 @@ namespace FinancialAssetsApp.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("AmountCrypto")
-                        .HasColumnType("numeric");
+                    b.Property<int>("AmountCrypto")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("DateAddStock")
                         .HasColumnType("timestamp with time zone");
@@ -42,7 +45,7 @@ namespace FinancialAssetsApp.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal>("SumCrypto")
+                    b.Property<decimal?>("SumCrypto")
                         .HasColumnType("numeric");
 
                     b.Property<decimal?>("SumCryptoToRuble")

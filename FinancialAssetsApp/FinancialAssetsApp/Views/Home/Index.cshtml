@@ -3,6 +3,37 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Мои активы</h1>
-    <p>Learn about <a href="">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Финансовый менеджер</h1>
+    <p>Ваш портфель</p>
 </div>
+
+<div class="d-flex justify-content-center align-items-center flex-column">
+    <div class="text-center">
+        <canvas style="width: 450px; height: 450px;align-content: center " id="TickerPie"></canvas>
+        <h3>По Компаниям</h3>
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+     fetch('/Stocks/GetChartT')   // Запрос к методу GetChart
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('TickerPie');
+            new Chart(ctx, {
+                  type: 'pie',
+                  data: {
+                    labels: data.map(d => d.label),
+                    datasets: [{
+                      data: data.map(d => d.total),
+                    }]
+                  },
+                  options: {
+                      responsive: false,
+                      maintainAspectRatio: false
+                  }
+            });
+        });
+</script>

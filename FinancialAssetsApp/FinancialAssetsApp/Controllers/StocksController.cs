@@ -20,7 +20,7 @@ namespace FinancialAssetsApp.Controllers
             _stocksService = stocksService;
         }
 
-        public async Task<IActionResult> Index()    // Список всех акций
+        public async Task<IActionResult> IndexStocks()    // Список всех акций
         {
             var stocks = await _stocksService.GetStocksByID(CurrentUserId);  // Перечисление всех данных из БД
             return View(stocks);
@@ -50,7 +50,7 @@ namespace FinancialAssetsApp.Controllers
             }
 
             await _stocksService.Add(stock);
-            return RedirectToAction("Index");
+            return RedirectToAction("IndexStocks");
         }
         public async Task<IActionResult> Delete(int id)
         {
@@ -64,10 +64,10 @@ namespace FinancialAssetsApp.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var stock = await _stocksService.GetStockById(id);
-            if (stock == null || stock.UserId != CurrentUserId)    //Првоерка на акции текущего пользователя
+            if (stock == null || stock.UserId != CurrentUserId)    //Проверка на акции текущего пользователя
                 return NotFound();
             await _stocksService.Delete(id);
-            return RedirectToAction("Index");
+            return RedirectToAction("IndexStocks");
         }
         public async Task<IActionResult> GetChartT()
         {
@@ -88,7 +88,7 @@ namespace FinancialAssetsApp.Controllers
         public async Task<IActionResult> FixSums()
         {
             await _stocksService.FixOldStocks();
-            return RedirectToAction("Index");
+            return RedirectToAction("IndexStocks");
         }
     }
 }

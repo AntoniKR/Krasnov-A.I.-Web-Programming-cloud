@@ -1,4 +1,88 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿fetch('/Stocks/GetChartT')   // Круговая Диаграмма по тикерам
+    .then(response => response.json())
+    .then(data => {
+        const ctx = document.getElementById('TickerPie');
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: data.map(d => d.label),
+                datasets: [{
+                    data: data.map(d => d.total),
+                }]
+            },
+            options: {
+                responsive: false,
+                maintainAspectRatio: false
+            }
+        });
+    });
 
-// Write your JavaScript code.
+fetch('/Stocks/GetChartC')   // Столбчатая Диаграмма  по странам
+    .then(response => response.json())
+    .then(data => {
+        const ctx = document.getElementById('CountryPie');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: data.map(d => d.label),
+                datasets: [{
+                    label: "Сумма в рублях",
+                    data: data.map(d => d.total),
+                }]
+            },
+            options: {
+                responsive: false,
+                maintainAspectRatio: false
+            }
+        });
+    })
+
+fetch('/Home/GetRateContr')   // Запрос к курсу
+    .then(response => response.json())
+    .then(rate => {
+        document.getElementById("RateUSD").innerHTML = rate.toFixed(2) + " ₽";
+    });
+
+fetch('/Home/GetAssetsChart')   // Круговая Диаграмма с общей суммой активов
+    .then(response => response.json())
+    .then(data => {
+        const ctx = document.getElementById('SummPie');
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: data.map(d => d.label),
+                datasets: [{
+                    data: data.map(d => d.total),
+                }]
+            },
+            options: {
+                responsive: false,
+                maintainAspectRatio: false
+            }
+        });
+
+        const totalSum = data.reduce((sum, item) => sum + item.total, 0);
+        document.getElementById("Summ").innerHTML = totalSum.toLocaleString("ru-RU", {
+            style: "currency",
+            currency: "RUB"
+        });
+
+    });
+fetch('/Crypto/GetChartCrypto')   // Круговая Диаграмма КРИПТА
+    .then(response => response.json())
+    .then(data => {
+        const ctx = document.getElementById('CryptoPie');
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: data.map(d => d.label),
+                datasets: [{
+                    data: data.map(d => d.total),
+                }]
+            },
+            options: {
+                responsive: false,
+                maintainAspectRatio: false
+            }
+        });
+    });

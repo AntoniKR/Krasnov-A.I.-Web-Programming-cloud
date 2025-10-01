@@ -36,7 +36,7 @@ namespace FinancialAssetsApp.Controllers
         public IActionResult Create()   // Страница добавления акции
         {
             FillListCountries();
-            return View();
+            return View("CreateStock");
         }
         [HttpPost]
         public async Task<IActionResult> Create(Stock stock)
@@ -46,7 +46,7 @@ namespace FinancialAssetsApp.Controllers
             if (!ModelState.IsValid)
             {
                 FillListCountries();
-                return View(stock);
+                return View("CreateStock", stock);
             }
 
             await _stocksService.Add(stock);
@@ -57,7 +57,7 @@ namespace FinancialAssetsApp.Controllers
             var stock = await _stocksService.GetStockById(id);
             if (stock == null || stock.UserId != CurrentUserId)    //Проверка на акции текущего пользователя
                 return NotFound();
-            return View(stock);
+            return View("DeleteStock",stock);
         }
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

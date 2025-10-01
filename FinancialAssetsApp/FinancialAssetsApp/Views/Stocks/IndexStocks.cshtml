@@ -1,7 +1,8 @@
 ﻿@model IEnumerable<FinancialAssetsApp.Models.Stock>
-
+@{
+    ViewData["Title"] = "Акции";
+}
 <h2>Мои акции</h2>
-
 <div class="container">
     <table class="table table-bordered">
         <thead class="table-light">
@@ -28,7 +29,6 @@
                     <td>@item.AmountStock</td>
                     <td>@item.SumStocks @item.CurrencySymbol</td>
                     <td>@item.SumStocksToRuble ₽</td>
-
                     <td>@item.DateAddStock.ToString("yyyy-MM-dd")</td>
                     <td>
                         <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Удалить</a>
@@ -36,15 +36,11 @@
                 </tr>
             }
         </tbody>
-
     </table>
     <!--
         <a asp-action="FixSums" class="btn btn-secondary">Пересчитать старые суммы</a> // Если добавится новый столбец в БД
-    -->
-    
+    -->  
     <a asp-action="Create" class="btn btn-primary">Добавить акцию</a>
-
-
 </div>
 
 <h2>Круговая диаграмма распределения акций</h2>
@@ -61,46 +57,4 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<script>
-     fetch('/Stocks/GetChartT')   // Запрос к методу GetChart
-        .then(response => response.json())
-        .then(data => {
-            const ctx = document.getElementById('TickerPie');
-            new Chart(ctx, {
-                  type: 'pie',
-                  data: {
-                    labels: data.map(d => d.label),
-                    datasets: [{
-                      data: data.map(d => d.total),
-                    }]
-                  },
-                  options: {
-                      responsive: false,
-                      maintainAspectRatio: false
-                  }
-            });   
-        });
-
-    fetch('/Stocks/GetChartC')   // Запрос к методу GetChart
-        .then(response => response.json())
-        .then(data => {
-            const ctx = document.getElementById('CountryPie');
-            new Chart(ctx, {
-                  type: 'bar',
-                  data: {
-                    labels: data.map(d => d.label),
-                    datasets: [{
-                      data: data.map(d => d.total),
-                    }]
-                  },
-                  options: {
-                      responsive: false,
-                      maintainAspectRatio: false
-                  }
-
-            });
-
-        })
-
-</script>
+<script src="~/js/site.js" asp-append-version="true"></script>

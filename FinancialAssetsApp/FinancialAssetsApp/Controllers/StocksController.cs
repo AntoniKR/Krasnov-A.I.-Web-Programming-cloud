@@ -22,7 +22,7 @@ namespace FinancialAssetsApp.Controllers
 
         public async Task<IActionResult> IndexStocks()    // Список всех акций
         {
-            var stocks = await _stocksService.GetStocksByID(CurrentUserId);  // Перечисление всех данных из БД
+            var stocks = await _stocksService.GetAssetsByID(CurrentUserId);  // Перечисление всех данных из БД
             return View(stocks);
         }
         private void FillListCountries()    // Метод для списка стран 
@@ -54,7 +54,7 @@ namespace FinancialAssetsApp.Controllers
         }
         public async Task<IActionResult> Delete(int id)
         {
-            var stock = await _stocksService.GetStockById(id);
+            var stock = await _stocksService.GetAssetById(id);
             if (stock == null || stock.UserId != CurrentUserId)    //Проверка на акции текущего пользователя
                 return NotFound();
             return View("DeleteStock",stock);
@@ -63,7 +63,7 @@ namespace FinancialAssetsApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var stock = await _stocksService.GetStockById(id);
+            var stock = await _stocksService.GetAssetById(id);
             if (stock == null || stock.UserId != CurrentUserId)    //Проверка на акции текущего пользователя
                 return NotFound();
             await _stocksService.Delete(id);
@@ -85,10 +85,10 @@ namespace FinancialAssetsApp.Controllers
 
 
 
-        public async Task<IActionResult> FixSums()
+        /*public async Task<IActionResult> FixSums()
         {
             await _stocksService.FixOldStocks();
             return RedirectToAction("IndexStocks");
-        }
+        }*/
     }
 }

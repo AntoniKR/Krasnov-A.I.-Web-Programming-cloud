@@ -11,14 +11,19 @@ namespace FinancialAssetsApp.Data
         public DbSet<Stock> Stocks { get; set; }    // Для взаимодействия с БД, хранящая акции
         public DbSet<User> Users { get; set; } // БД, хранящая юзеров
         public DbSet<Crypto> Cryptos { get; set; } // БД, хранящая крипту
+        public DbSet<Metal> Metals { get; set; } // БД, хранящая крипту
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<Stock>()
-                .HasOne(s => s.User)
-                .WithMany(u => u.Stocks)
-                .HasForeignKey(s => s.UserId)
-                .OnDelete(DeleteBehavior.Cascade);   //При удалении пользователя удаление всех акций
+
+            foreach(var diffKey in modelBuilder.Model   //При удалении пользователя удаление всех активов
+                .GetEntityTypes()
+                .SelectMany(e => e.GetForeignKeys())
+                .Where(fk => fk.PrincipalEntityType.ClrType == typeof(User)))
+            {
+                diffKey.DeleteBehavior = DeleteBehavior.Cascade;
+            }
         }
     }
 }

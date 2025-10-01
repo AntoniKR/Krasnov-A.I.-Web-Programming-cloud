@@ -3,7 +3,7 @@
     ViewData["Title"] = "Добавить криптовалюту";
 }
 <div class="container">
-    <h2> Добавить акцию</h2>
+    <h2> Добавить криптовалюту</h2>
     <form asp-action="Create" method="post">
         <div>
             <label asp-for="Ticker" class="form-label">Тикер *</label>
@@ -27,7 +27,7 @@
             <span asp-validation-for="AmountCrypto" class="text-danger"></span>
 
         </div>
-        <button type="submit" class="btn btn-primary">Добавить акцию</button>
+        <button type="submit" class="btn btn-primary">Добавить криптовалюту</button>
     </form>
     <div>
         * - Обязательные поля для заполнения

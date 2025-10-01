@@ -1,9 +1,9 @@
 ﻿using FinancialAssetsApp.Data;
 using FinancialAssetsApp.Data.Service;
 using FinancialAssetsApp.Models;
+using FinancialAssetsApp.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-
 
 namespace FinancialAssetsApp.Controllers
 {
@@ -17,7 +17,7 @@ namespace FinancialAssetsApp.Controllers
         }
         public async Task<IActionResult> IndexCrypto()    // Список всей крипты
         {
-            var cryptos = await _cryptosService.GetCryptosByID(CurrentUserId);
+            var cryptos = await _cryptosService.GetAssetsByID(CurrentUserId);
             //await FixCrypto();    // Для правок в БД
             return View(cryptos);
         }
@@ -39,7 +39,7 @@ namespace FinancialAssetsApp.Controllers
         }
         public async Task<IActionResult> Delete(int id)
         {
-            var crypto = await _cryptosService.GetCryptoById(id);
+            var crypto = await _cryptosService.GetAssetById(id);
             if (crypto == null || crypto.UserId != CurrentUserId)    //Проверка на акции текущего пользователя
                 return NotFound();
             return View("DeleteCrypto",crypto);
@@ -48,7 +48,7 @@ namespace FinancialAssetsApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var crypto = await _cryptosService.GetCryptoById(id);
+            var crypto = await _cryptosService.GetAssetById(id);
             if (crypto == null || crypto.UserId != CurrentUserId)    //Проверка на акции текущего пользователя
                 return NotFound();
             await _cryptosService.Delete(id);
@@ -56,16 +56,15 @@ namespace FinancialAssetsApp.Controllers
         }
 
 
-        public async Task<IActionResult> GetChartCrypto()
+        public async Task<IActionResult> GetChartTicker()
         {
             var data = await _cryptosService.GetChartTicker(CurrentUserId);
             return Json(data);
         }
-        public async Task<IActionResult> FixCrypto()
+        /*public async Task<IActionResult> FixCrypto()
         {
             await _cryptosService.FixOldCryptos();
             return RedirectToAction("IndexStocks");
-        }
-
+        }*/
     }
 }

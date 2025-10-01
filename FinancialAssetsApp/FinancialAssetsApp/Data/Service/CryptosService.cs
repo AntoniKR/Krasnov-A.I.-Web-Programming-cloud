@@ -20,6 +20,9 @@ namespace FinancialAssetsApp.Data.Service
         {
             decimal rate = await _assetdata.GetRateAsset("USD"); ;   // Курс доллара
 
+            var temp = crypto.Ticker.ToUpper();  //Перевод в верхний регистр
+            crypto.Ticker = temp;
+
             crypto.SumCrypto = crypto.Price * crypto.AmountCrypto;
             crypto.SumCryptoToRuble = crypto.SumCrypto * rate;  // Перерасчет в рублях
             _context.Cryptos.Add(crypto);
@@ -34,11 +37,11 @@ namespace FinancialAssetsApp.Data.Service
                 await _context.SaveChangesAsync();
             }
         }
-        public async Task<Crypto?> GetCryptoById(int id)  //получение акции для удаления
+        public async Task<Crypto?> GetAssetById(int id)  //получение акции для удаления
         {
             return await _context.Cryptos.FirstOrDefaultAsync(x => x.Id == id);
         }
-        public async Task<IEnumerable<Crypto>> GetCryptosByID(int userId)     //Перечисление всех акций пользователя
+        public async Task<IEnumerable<Crypto>> GetAssetsByID(int userId)     //Перечисление всех акций пользователя
         {
             var crypto = await _context.Cryptos
                 .Where(s => s.UserId == userId)
@@ -65,10 +68,6 @@ namespace FinancialAssetsApp.Data.Service
                 .ToListAsync();
             return data;
         }
-
-
-
-
         public async Task FixOldCryptos()   // Для правок в БД
         {
             var cryptos = await _context.Cryptos.ToListAsync();

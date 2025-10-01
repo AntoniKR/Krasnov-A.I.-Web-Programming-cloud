@@ -21,6 +21,8 @@ namespace FinancialAssetsApp
             builder.Services.AddHttpClient<IAssetData, AssetData>();
             builder.Services.AddScoped<ICryptosService, CryptosService>();
             builder.Services.AddScoped<HomeService>();
+            builder.Services.AddScoped<IMetalsService, MetalsService>();
+
 
             builder.Services.AddDistributedMemoryCache();
             builder.Services.AddSession(options =>  // ≈сли сесси€ была без активности 30 минут, то выход

@@ -68,10 +68,28 @@ fetch('/Home/GetAssetsChart')   // Круговая Диаграмма с общ
         });
 
     });
-fetch('/Crypto/GetChartCrypto')   // Круговая Диаграмма КРИПТА
+fetch('/Crypto/GetChartTicker')   // Круговая Диаграмма КРИПТА
     .then(response => response.json())
     .then(data => {
         const ctx = document.getElementById('CryptoPie');
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: data.map(d => d.label),
+                datasets: [{
+                    data: data.map(d => d.total),
+                }]
+            },
+            options: {
+                responsive: false,
+                maintainAspectRatio: false
+            }
+        });
+    });
+fetch('/Metals/GetChartT')   // Круговая Диаграмма металлы
+    .then(response => response.json())
+    .then(data => {
+        const ctx = document.getElementById('MetalsPie');
         new Chart(ctx, {
             type: 'pie',
             data: {

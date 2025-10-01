@@ -20,7 +20,8 @@ namespace FinancialAssetsApp.Data.Service
             decimal rate = 1;   // Если акции российские, то сумма остается той же
             if (stock.Country == "США")
                 rate = await _assetdata.GetRateAsset("USD");
-
+            var temp = stock.Ticker.ToUpper();  //Перевод в верхний регистр
+            stock.Ticker = temp;
             stock.SumStocks = stock.Price * stock.AmountStock;
             stock.SumStocksToRuble = stock.SumStocks * rate;  // Перерасчет в рублях
             _context.Stocks.Add(stock);
@@ -35,11 +36,11 @@ namespace FinancialAssetsApp.Data.Service
                 await _context.SaveChangesAsync();
             }
         }
-        public async Task<Stock?> GetStockById(int id)  //получение акции для удаления
+        public async Task<Stock?> GetAssetById(int id)  //получение акции для удаления
         {
             return await _context.Stocks.FirstOrDefaultAsync(x => x.Id == id);
         }
-        public async Task<IEnumerable<Stock>> GetStocksByID(int userId)     //Перечисление всех акций пользователя
+        public async Task<IEnumerable<Stock>> GetAssetsByID(int userId)     //Перечисление всех акций пользователя
         {
             var stocks = await _context.Stocks
                 .Where(s => s.UserId == userId)

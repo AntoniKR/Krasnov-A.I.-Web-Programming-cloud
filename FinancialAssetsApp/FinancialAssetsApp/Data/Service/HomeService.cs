@@ -22,10 +22,14 @@ namespace FinancialAssetsApp.Data.Service
             var totalCrypto = await _context.Cryptos
                 .Where(s => s.UserId == userId)
                 .SumAsync(e => e.SumCryptoToRuble) ?? 0;
+            var totalMetals = await _context.Metals
+                .Where(s => s.UserId == userId)
+                .SumAsync(e => e.SumMetals) ?? 0;
             return new List<ForChart>
             {
                 new ForChart{Label = "Акции", Total = totalStocks},
-                new ForChart{Label = "Криптовалюта", Total = totalCrypto}
+                new ForChart{Label = "Криптовалюта", Total = totalCrypto},
+                new ForChart{Label = "Металл", Total = totalMetals}
             };
         }
         public async Task<decimal> GetRate()

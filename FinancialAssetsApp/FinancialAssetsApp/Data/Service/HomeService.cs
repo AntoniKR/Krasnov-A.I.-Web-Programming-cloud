@@ -18,6 +18,9 @@ namespace FinancialAssetsApp.Data.Service
         {
             var totalStocks = await _context.Stocks
                 .Where(s => s.UserId == userId)
+                .SumAsync(e => e.SumStocks) ?? 0;
+            var totalStocksUSD = await _context.StocksUSD
+                .Where(s => s.UserId == userId)
                 .SumAsync(e => e.SumStocksToRuble) ?? 0;
             var totalCrypto = await _context.Cryptos
                 .Where(s => s.UserId == userId)
@@ -27,14 +30,15 @@ namespace FinancialAssetsApp.Data.Service
                 .SumAsync(e => e.SumMetals) ?? 0;
             return new List<ForChart>
             {
-                new ForChart{Label = "Акции", Total = totalStocks},
+                new ForChart{Label = "Акции ₽", Total = totalStocks},
+                new ForChart{Label = "Акции $", Total = totalStocksUSD},
                 new ForChart{Label = "Криптовалюта", Total = totalCrypto},
-                new ForChart{Label = "Металл", Total = totalMetals}
+                new ForChart{Label = "Металлы", Total = totalMetals},
             };
         }
         public async Task<decimal> GetRate()
         {
-            return await _assetdata.GetRateAsset("USD");
+            return await _assetdata.GetCurrencyRate("USD");
         }
     }
 }

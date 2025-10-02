@@ -11,7 +11,8 @@ namespace FinancialAssetsApp.Data
         public DbSet<Stock> Stocks { get; set; }    // Для взаимодействия с БД, хранящая акции
         public DbSet<User> Users { get; set; } // БД, хранящая юзеров
         public DbSet<Crypto> Cryptos { get; set; } // БД, хранящая крипту
-        public DbSet<Metal> Metals { get; set; } // БД, хранящая крипту
+        public DbSet<Metal> Metals { get; set; } // БД, хранящая металлы
+        public DbSet<StockUSD> StocksUSD { get; set; } // БД, хранящая акции USD
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

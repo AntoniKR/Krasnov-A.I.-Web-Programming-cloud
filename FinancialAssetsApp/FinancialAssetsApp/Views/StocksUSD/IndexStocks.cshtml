@@ -1,6 +1,6 @@
-﻿@model IEnumerable<FinancialAssetsApp.Models.Stock>
+﻿@model IEnumerable<FinancialAssetsApp.Models.StockUSD>
 @{
-    ViewData["Title"] = "Российские Акции";
+    ViewData["Title"] = "Американские Акции";
 }
 <h2>Мои акции</h2>
 <div class="container">
@@ -10,11 +10,12 @@
                 <th>Тикер</th>
                 <th>Название компании</th>
                 <th>Цена покупки</th>
-                <th>Текущая цена</th>
                 <th>Количество</th>
                 <th>Стоимость</th>
+                <th>Стоимость в рублях</th>
                 <th>Дата добавления</th>
                 <th></th>
+
             </tr>
         </thead>
         <tbody>
@@ -23,10 +24,10 @@
                 <tr>
                     <td>@item.Ticker</td>
                     <td>@item.NameCompany</td>
-                    <td>@item.Price ₽</td>
-                    <td>@item.LastPrice ₽</td>
+                    <td>@item.Price $</td>
                     <td>@item.AmountStock</td>
-                    <td>@item.SumStocks</td>
+                    <td>@item.SumStocks $</td>
+                    <td>@item.SumStocksToRuble ₽</td>
                     <td>@item.DateAddStock.ToString("yyyy-MM-dd")</td>
                     <td>
                         <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Удалить</a>

@@ -18,7 +18,7 @@ namespace FinancialAssetsApp.Data.Service
         }
         public async Task Add(Crypto crypto)  // Добавление крипты в БД
         {
-            decimal rate = await _assetdata.GetRateAsset("USD"); ;   // Курс доллара
+            decimal rate = await _assetdata.GetCurrencyRate("USD"); ;   // Курс доллара
 
             var temp = crypto.Ticker.ToUpper();  //Перевод в верхний регистр
             crypto.Ticker = temp;
@@ -71,7 +71,7 @@ namespace FinancialAssetsApp.Data.Service
         public async Task FixOldCryptos()   // Для правок в БД
         {
             var cryptos = await _context.Cryptos.ToListAsync();
-            decimal rate = await _assetdata.GetRateAsset("USD");
+            decimal rate = await _assetdata.GetCurrencyRate("USD");
 
             foreach (var crypto in cryptos)
             {

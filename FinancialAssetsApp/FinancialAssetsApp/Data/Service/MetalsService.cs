@@ -65,7 +65,7 @@ namespace FinancialAssetsApp.Data.Service
                 .ToListAsync();
             return data;
         }
-        public async Task FixOldStocks()
+        /*public async Task FixOldStocks()
         {
             var stocks = await _context.Stocks
                 .Where(s => s.SumStocksToRuble == null && s.AmountStock > 0)
@@ -75,12 +75,12 @@ namespace FinancialAssetsApp.Data.Service
             {
                 decimal rate = 1;   // Если акции российские, то сумма остается той же
                 if (stock.Country == "США")
-                    rate = await _assetdata.GetRateAsset("USD");
+                    rate = await _assetData.GetCurrencyRate("USD");
                 stock.SumStocks = stock.Price * stock.AmountStock;
                 stock.SumStocksToRuble = stock.SumStocks * rate;
             }
 
             await _context.SaveChangesAsync();
-        }
+        }*/
     }
 }

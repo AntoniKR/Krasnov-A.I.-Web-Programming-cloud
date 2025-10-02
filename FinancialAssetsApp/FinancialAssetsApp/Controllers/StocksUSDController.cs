@@ -11,59 +11,36 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace FinancialAssetsApp.Controllers
 {
-    public class StocksController : Controller
+    public class StocksUSDController : Controller
     {
-        private readonly IStocksService _stocksService;
-        private readonly IAssetData _assetdata; // Для парсинга различных курсов
+        private readonly IStocksUSDService _stocksService;
+        private readonly IAssetData _assetData; // Для парсинга различных курсов
 
         private int CurrentUserId => HttpContext.Session.GetInt32("UserId") ?? 0;
-        public StocksController(IStocksService stocksService, IAssetData assetdata)
+        public StocksUSDController(IStocksUSDService stocksService, IAssetData assetdata)
         {
             _stocksService = stocksService;
-            _assetdata = assetdata;
+            _assetData = assetdata;
         }
-
         public async Task<IActionResult> IndexStocks()    // Список всех акций
         {
             var stocks = await _stocksService.GetAssetsByID(CurrentUserId);  // Перечисление всех данных из БД
 
-            foreach (var stock in stocks)
-            {
-                try
-                {
-                    stock.LastPrice = await _assetdata.RUgetStockPrice(stock.Ticker);
-                }
-                catch
-                {
-                    stock.LastPrice = 0;
-                }
-            }
             return View(stocks);
-        }
-        private void FillListCountries()    // Метод для списка стран 
-        {
-            ViewBag.Countries = new List<SelectListItem>        // Создание списка для выбора страны компании
-            {
-                new SelectListItem {Value = "Россия", Text = "Россия"},
-                new SelectListItem {Value="США", Text = "США"}
-            };
         }
         public IActionResult Create()   // Страница добавления акции
         {
-            FillListCountries();
             return View("CreateStock");
         }
         [HttpPost]
-        public async Task<IActionResult> Create(Stock stock)
+        public async Task<IActionResult> Create(StockUSD stock)
         {
             stock.UserId = CurrentUserId;  //Привязка к текущему пользователю
 
             if (!ModelState.IsValid)
             {
-                FillListCountries();
                 return View("CreateStock", stock);
             }
-
             await _stocksService.Add(stock);
             return RedirectToAction("IndexStocks");
         }

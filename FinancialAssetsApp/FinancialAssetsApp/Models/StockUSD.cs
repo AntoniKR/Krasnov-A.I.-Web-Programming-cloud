@@ -1,15 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FinancialAssetsApp.Models
 {
-    public class Stock
+    public class StockUSD
     {
         public int Id { get; set; }                 // Идентификация
 
         [Required(ErrorMessage = "Введите тикер акции")]
         [StringLength(4, MinimumLength = 1)]
         public string Ticker { get; set; } = string.Empty;  // Тикер акции 
+
         public string? NameCompany { get; set; }     // Название компании
 
         [Required(ErrorMessage = "Введите цену больше 0,01")]
@@ -20,10 +20,10 @@ namespace FinancialAssetsApp.Models
         [Range(1, int.MaxValue, ErrorMessage = "Количество акций должно быть больше 0")] //Ограничение на ввод
         public int? AmountStock { get; set; }        // Количество акций
         public decimal? SumStocks { get; set; }        // Стоимость акций
+        public decimal? SumStocksToRuble { get; set; }        // Стоимость акций в рублях
+
         public DateTime DateAddStock { get; set; } = DateTime.UtcNow;    // Время обновления
 
-        [NotMapped] // Без доабвления в бд
-        public decimal LastPrice { get; set; }
         [Required]
         public int UserId { get; set; }
         public User? User { get; set; }

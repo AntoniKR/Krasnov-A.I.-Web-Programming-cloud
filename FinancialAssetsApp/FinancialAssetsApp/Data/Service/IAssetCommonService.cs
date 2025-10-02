@@ -11,10 +11,15 @@ namespace FinancialAssetsApp.Data.Service
         Task Add(T asset);
         Task Delete(int id);
     }
-    public interface IStocksService : IAssetCommonService<Stock> // Построение графиков по тикерам и странам
+    public interface IStocksService : IAssetCommonService<Stock> // Построение графиков по тикерам и странам рос. акций
     {
         Task<IEnumerable<ForChart>> GetChartTicker(int userId);
-        Task<IEnumerable<ForChart>> GetChartCountry(int userId);
+        //Task<IEnumerable<ForChart>> GetChartCountry(int userId);
+    }
+    public interface IStocksUSDService : IAssetCommonService<StockUSD> // Построение графиков по тикерам и странам рос. акций
+    {
+        Task<IEnumerable<ForChart>> GetChartTicker(int userId);
+        //Task<IEnumerable<ForChart>> GetChartCountry(int userId);
     }
     public interface ICryptosService : IAssetCommonService<Crypto>    // График по тикерам
     {

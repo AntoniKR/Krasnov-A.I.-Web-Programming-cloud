@@ -4,16 +4,37 @@ using FinancialAssetsApp.Models;
 using FinancialAssetsApp.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Text.Json;
+using System.Net.Http;
 
 namespace FinancialAssetsApp.Controllers
 {
+    [Route("Crypto")]
     public class CryptoController : Controller
     {
         public readonly ICryptosService _cryptosService;
+        private readonly HttpClient _httpClient;
         private int CurrentUserId => HttpContext.Session.GetInt32("UserId") ?? 0;
-        public CryptoController(ICryptosService cryptosService) 
+        public CryptoController(ICryptosService cryptosService, HttpClient httpClient) 
         {
             _cryptosService = cryptosService;
+            _httpClient = httpClient;
+        }
+        [HttpGet("GetTickers")]
+        public async Task<IActionResult> GetTickers(string symbols)
+        {
+            var urlTickers = "https://api-testnet.bybit.com/v5/market/tickers?category=spot";
+            var response = await _httpClient.GetStringAsync(urlTickers);
+            var json = JsonDocument.Parse(response);
+
+            var tickers = json.RootElement
+                .GetProperty("result")
+                .GetProperty("list")
+                .EnumerateArray()
+                .Select(x => x.GetProperty("symbol").GetString())
+                .Where(s => string.IsNullOrEmpty(symbols) || s.StartsWith(symbols.ToUpper())
+                .Take(20)
+                .ToList();
         }
         public async Task<IActionResult> IndexCrypto()    // Список всей крипты
         {
@@ -54,8 +75,6 @@ namespace FinancialAssetsApp.Controllers
             await _cryptosService.Delete(id);
             return RedirectToAction("IndexCrypto");
         }
-
-
         public async Task<IActionResult> GetChartTicker()
         {
             var data = await _cryptosService.GetChartTicker(CurrentUserId);

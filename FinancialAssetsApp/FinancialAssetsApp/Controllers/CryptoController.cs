@@ -9,7 +9,6 @@ using System.Net.Http;
 
 namespace FinancialAssetsApp.Controllers
 {
-    [Route("Crypto")]
     public class CryptoController : Controller
     {
         public readonly ICryptosService _cryptosService;
@@ -20,10 +19,9 @@ namespace FinancialAssetsApp.Controllers
             _cryptosService = cryptosService;
             _httpClient = httpClient;
         }
-        [HttpGet("GetTickers")]
-        public async Task<IActionResult> GetTickers(string symbols)
+        public async Task<IActionResult> GetTickersCrypto(string symbols)   //Получение списка крипта с Bybit
         {
-            var urlTickers = "https://api-testnet.bybit.com/v5/market/tickers?category=spot";
+            var urlTickers = "https://api.bybit.com/v5/market/tickers?category=spot";
             var response = await _httpClient.GetStringAsync(urlTickers);
             var json = JsonDocument.Parse(response);
 
@@ -32,10 +30,32 @@ namespace FinancialAssetsApp.Controllers
                 .GetProperty("list")
                 .EnumerateArray()
                 .Select(x => x.GetProperty("symbol").GetString())
-                .Where(s => string.IsNullOrEmpty(symbols) || s.StartsWith(symbols.ToUpper())
+                .Where(s => string.IsNullOrEmpty(symbols) || s.StartsWith(symbols.ToUpper()))
                 .Take(20)
                 .ToList();
+            return Json(tickers);
         }
+
+        
+        public async Task<IActionResult> GetPriceCrypto (string symbols)    //Получение текущей цены крипты
+        {
+            var urlTickers = "https://api.bybit.com/v5/market/tickers?category=spot";
+            var response = await _httpClient.GetStringAsync(urlTickers);
+            var json = JsonDocument.Parse(response);
+
+            var ticker = json.RootElement
+                .GetProperty("result")
+                .GetProperty("list")
+                .EnumerateArray()
+                .FirstOrDefault(x => x.GetProperty("symbol").GetString() == symbols);
+
+            if (ticker.ValueKind == JsonValueKind.Undefined)
+                return Json("not found(");
+            var price = ticker.GetProperty("lastPrice").GetString();
+            return Json(price);
+
+        }
+
         public async Task<IActionResult> IndexCrypto()    // Список всей крипты
         {
             var cryptos = await _cryptosService.GetAssetsByID(CurrentUserId);

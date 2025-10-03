@@ -15,14 +15,26 @@ namespace FinancialAssetsApp.Data.Service
             _context = context;
             _assetdata = assetdata;
         }
-        public async Task Add(Metal metal)  // Добавление акции в БД
+        public async Task Add(Metal metal)  // Добавление металла в БД
         {
+            var existMetal = await _context.Metals.FirstOrDefaultAsync(mtl => mtl.UserId == metal.UserId && mtl.NameMetal == metal.NameMetal); //поиск существующего
 
-            //var temp = stock.Ticker.ToUpper();  //Перевод в верхний регистр
-            //stock.NameMetal = temp;
             metal.SumMetals = metal.Price * metal.AmountMetal;
 
-            _context.Metals.Add(metal);
+            if (existMetal != null) // если такой металл есть, то усредняем, иначе добавляем новый
+            {
+                var totalAmount = existMetal.AmountMetal + metal.AmountMetal;   
+                existMetal.Price = (existMetal.SumMetals + metal.SumMetals) / totalAmount;
+                existMetal.AmountMetal = totalAmount;
+                existMetal.SumMetals = existMetal.Price * existMetal.AmountMetal;
+                existMetal.DateAddStock = DateTime.UtcNow;
+
+                _context.Metals.Update(existMetal);
+            }
+            else
+            {
+                await _context.Metals.AddAsync(metal);
+            }
             await _context.SaveChangesAsync();  // Асинхронно сохраняем изменения в БД
         }
         public async Task Delete(int id)    //Удаление акции

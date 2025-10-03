@@ -21,8 +21,26 @@ namespace FinancialAssetsApp.Data.Service
             var temp = stock.Ticker.ToUpper();  //Перевод в верхний регистр
             stock.Ticker = temp;
             stock.SumStocks = stock.Price * stock.AmountStock;
-            stock.SumStocksToRuble = stock.SumStocks * rate;
-            _context.StocksUSD.Add(stock);
+
+            var existStock = await _context.StocksUSD.FirstOrDefaultAsync(stck => stck.UserId == stock.UserId && stck.Ticker == stock.Ticker); //поиск существующего
+
+            stock.SumStocks = stock.Price * stock.AmountStock;
+
+            if (existStock != null) // если такой металл есть, то усредняем, иначе добавляем новый
+            {
+                var totalAmount = existStock.AmountStock + stock.AmountStock;
+                existStock.Price = (existStock.SumStocks + stock.SumStocks) / totalAmount;
+                existStock.AmountStock = totalAmount;
+                existStock.SumStocks = existStock.Price * existStock.AmountStock;
+                existStock.SumStocksToRuble = existStock.SumStocks * rate;
+                existStock.DateAddStock = DateTime.UtcNow;
+
+                _context.StocksUSD.Update(existStock);
+            }
+            else
+            {
+                await _context.StocksUSD.AddAsync(stock);
+            }
             await _context.SaveChangesAsync();  // Асинхронно сохраняем изменения в БД
         }
         public async Task Delete(int id)    //Удаление акции

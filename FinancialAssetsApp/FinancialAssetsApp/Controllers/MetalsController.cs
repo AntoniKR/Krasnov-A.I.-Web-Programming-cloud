@@ -23,7 +23,7 @@ namespace FinancialAssetsApp.Controllers
         public async Task<IActionResult> IndexMetals()    // Список всех акций
         {
             var metals = await _metalService.GetAssetsByID(CurrentUserId);  // Перечисление всех данных из БД
-            return View(metals);
+            return View("IndexMetals", metals);
         }
         private void FillListMetals()    // Метод для списка металлов 
         {

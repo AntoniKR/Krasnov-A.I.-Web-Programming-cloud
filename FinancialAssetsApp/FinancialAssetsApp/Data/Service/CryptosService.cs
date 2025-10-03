@@ -16,16 +16,33 @@ namespace FinancialAssetsApp.Data.Service
             _context = context;
             _assetdata = assetdata;
         }
-        public async Task Add(Crypto crypto)  // Добавление крипты в БД
+        public async Task Add(Crypto crypto)  // Добавление крипты в БД с учетом повторения
         {
             decimal rate = await _assetdata.GetCurrencyRate("USD"); ;   // Курс доллара
-
             var temp = crypto.Ticker.ToUpper();  //Перевод в верхний регистр
-            crypto.Ticker = temp;
+            var oldTicker = await _context.Cryptos.FirstOrDefaultAsync
+                (c => c.UserId == crypto.UserId && c.Ticker == crypto.Ticker);
 
             crypto.SumCrypto = crypto.Price * crypto.AmountCrypto;
-            crypto.SumCryptoToRuble = crypto.SumCrypto * rate;  // Перерасчет в рублях
-            _context.Cryptos.Add(crypto);
+            crypto.SumCryptoToRuble = crypto.SumCrypto * rate;
+
+            if (oldTicker != null)   // если уже есть такой тикер в БД, то цену ставим среднюю
+            {
+                var totalAmount = oldTicker.AmountCrypto + crypto.AmountCrypto;
+                oldTicker.Price = (oldTicker.SumCrypto + crypto.SumCrypto) / totalAmount;
+                oldTicker.AmountCrypto = totalAmount;
+                oldTicker.SumCrypto = oldTicker.Price * oldTicker.AmountCrypto;
+                oldTicker.SumCryptoToRuble = oldTicker.SumCrypto * rate;
+                oldTicker.DateAddStock = DateTime.UtcNow;
+
+                _context.Cryptos.Update(oldTicker);
+            }
+            //Иначе добавляем новую крипту
+            else
+            {                           
+                await _context.Cryptos.AddAsync(crypto);
+            }
+            
             await _context.SaveChangesAsync();  // Асинхронно сохраняем изменения в БД
         }
         public async Task Delete(int id)    //Удаление акции

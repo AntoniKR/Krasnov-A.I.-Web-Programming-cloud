@@ -7,7 +7,7 @@ namespace FinancialAssetsApp.Models
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Введите тикер криптовалюты")]
-        [StringLength(4, MinimumLength = 1)]
+        [StringLength(10, MinimumLength = 1)]
         public string Ticker { get; set; } = string.Empty;  // Тикер криптовалюты 
 
         public string? NameCrypto { get; set; }     // Название криптовалюты

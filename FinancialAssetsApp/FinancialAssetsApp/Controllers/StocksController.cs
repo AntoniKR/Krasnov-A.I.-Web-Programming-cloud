@@ -40,17 +40,8 @@ namespace FinancialAssetsApp.Controllers
             }
             return View(stocks);
         }
-        private void FillListCountries()    // Метод для списка стран 
-        {
-            ViewBag.Countries = new List<SelectListItem>        // Создание списка для выбора страны компании
-            {
-                new SelectListItem {Value = "Россия", Text = "Россия"},
-                new SelectListItem {Value="США", Text = "США"}
-            };
-        }
         public IActionResult Create()   // Страница добавления акции
         {
-            FillListCountries();
             return View("CreateStock");
         }
         [HttpPost]
@@ -60,7 +51,6 @@ namespace FinancialAssetsApp.Controllers
 
             if (!ModelState.IsValid)
             {
-                FillListCountries();
                 return View("CreateStock", stock);
             }
 

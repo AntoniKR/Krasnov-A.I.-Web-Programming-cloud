@@ -3,7 +3,8 @@
     ViewData["Title"] = "Криптовалюта";
 }
 <h2>Моя криптовалюта</h2>
-
+<p style="font-style: italic; text-align: right">* Данные о текущей цене взяты с Bybit</p>
+<p style="font-style: italic; text-align: right">Если данных нет, то данная криптовалюта не торгуется на Bybit</p>
 <div class="container">
     <table class="table table-bordered">
         <thead class="table-light">
@@ -12,6 +13,8 @@
                 <th>Название криптовалюты</th>
 
                 <th>Цена</th>
+                <th>Текущая Цена</th>
+
                 <th>Количество</th>
                 <th>Стоимость</th>
                 <th>Стоимость в рублях</th>
@@ -22,10 +25,12 @@
         <tbody>
             @foreach (var item in Model)
             {
-                <tr>
+                <tr data-symbol="@item.Ticker">
                     <td>@item.Ticker</td>
                     <td>@item.NameCrypto</td>
-                    <td>@item.Price $</td>
+                    <td>@item.Price.ToString("F2") $</td>
+                    <td class="current-price">Загрузка...</td>
+
                     <td>@item.AmountCrypto</td>
                     <td>@item.SumCrypto $</td>
                     <td>@item.SumCryptoToRuble ₽</td>
@@ -53,5 +58,4 @@
         <h3>По Криптовалюте</h3>
     </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="~/js/site.js" asp-append-version="true"></script>

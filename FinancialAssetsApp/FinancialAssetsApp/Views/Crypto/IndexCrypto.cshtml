@@ -11,12 +11,14 @@
             <tr>
                 <th>Тикер</th>
                 <th>Название криптовалюты</th>
+                <th>Цена покупки</th>
 
-                <th>Цена</th>
+                <th>Изменение </th>
+
                 <th>Текущая Цена</th>
-
                 <th>Количество</th>
-                <th>Стоимость</th>
+                <th>Стоимость покупки</th>
+                <th>Текущая стоимость</th>
                 <th>Стоимость в рублях</th>
                 <th>Дата добавления </th>
                 <th></th>
@@ -29,10 +31,12 @@
                     <td>@item.Ticker</td>
                     <td>@item.NameCrypto</td>
                     <td>@item.Price.ToString("F2") $</td>
+                    <td style="font-weight: bold" class="change-price">Загрузка...</td>
                     <td class="current-price">Загрузка...</td>
-
                     <td>@item.AmountCrypto</td>
                     <td>@item.SumCrypto $</td>
+                    <td style="font-weight: bold" class="change-sum">Загрузка...</td>
+                    <td class="current-sum">Загрузка...</td>
                     <td>@item.SumCryptoToRuble ₽</td>
 
                     <td>@item.DateAddStock.ToString("yyyy-MM-dd")</td>

@@ -119,7 +119,7 @@ fetchJson('/Metals/GetChartT').then(data => {
     });
 });
 
-// Автокомплит тикеров
+// Список тикеров для крипты
 document.addEventListener("DOMContentLoaded", async () => {
     const tickerInput = document.getElementById("TickerInput");
     if (!tickerInput) return;
@@ -135,16 +135,46 @@ document.addEventListener("DOMContentLoaded", async () => {
 document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll("tr[data-symbol]").forEach(row => {
         const symbol = row.getAttribute("data-symbol");
-        const priceCell = row.querySelector(".current-price");
-        if (!symbol || !priceCell) return;
+        const currPriceCell = row.querySelector(".current-price");
+        const changeSumCell = row.querySelector(".change-sum");
+        const currentSumCell = row.querySelector(".current-sum");
+        if (!symbol || !currPriceCell || !changePriceCell) return;
+
+        const purchasePrice = parseFloat(row.cells[2].textContent.replace("$", "").trim()); //выделяем цену покупки
+        const amountCrypto = parseFloat(row.cells[4].textContent.replace("$", "").trim()); //выделяем количество для вычисления изменения суммы
 
         fetch(`/Crypto/GetPriceCrypto?symbols=${encodeURIComponent(symbol)}`)
             .then(res => res.json())
             .then(price => {
-                if (!price || isNaN(price)) priceCell.textContent = "нет данных";
-                else priceCell.textContent = parseFloat(price).toFixed(2) + " $";
+                if (!price || isNaN(price)) {
+                    currPriceCell.textContent = "нет данных";
+                    changePriceCell.textContent = "-";
+                }
+                else {
+                    // текущая цена
+                    const currentPrice = parseFloat(price);
+                    currPriceCell.textContent = parseFloat(price).toFixed(2) + " $";
+
+                    // Изменение в процентах
+                    const changeProcent = ((currentPrice - purchasePrice) / purchasePrice) * 100;
+                    const changeFormat = (currentPrice - purchasePrice).toFixed(2) + " (" + changeProcent.toFixed(2) + " %)"
+                    changePriceCell.textContent = changeFormat;
+                    changePriceCell.style.color = changeProcent >= 0 ? "green" : "red";
+
+                    //Изменение стоимости 
+                    const currentSum = currentPrice * amountCrypto;
+                    currentSumCell.textContent = currentSum.toFixed(2);
+                    const changeFormat = (currentPrice - purchasePrice).toFixed(2) + " (" + changeProcent.toFixed(2) + " %)"
+                    changePriceCell.textContent = changeFormat;
+                    changePriceCell.style.color = changeProcent >= 0 ? "green" : "red";
+                }
+                    
             })
-            .catch(() => priceCell.textContent = "ошибка");
+            .catch(() => {
+                currPriceCell.textContent = "ошибка";
+                changePriceCell.textContent = "-";
+            })
+                
     });
 });
 

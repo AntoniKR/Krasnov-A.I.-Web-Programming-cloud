@@ -27,6 +27,14 @@ async function fetchJson(url) {
     }
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll('input[name="Price"], input[name="AmountCrypto"]').forEach(input => {
+        input.addEventListener("input", () => {
+            input.value = input.value.replace(".", ",");
+        });
+    });
+});
+
 // Круговая диаграмма по тикерам RUB
 fetchJson('/Stocks/GetChartT').then(data => {
     if (!data) return;
@@ -139,39 +147,45 @@ document.addEventListener("DOMContentLoaded", () => {
         const changeSumCell = row.querySelector(".change-sum");
         const currentSumCell = row.querySelector(".current-sum");
         const changePriceCell = row.querySelector(".change-price");
+        
         if (!symbol || !currPriceCell || !changePriceCell) return;
 
-        const purchasePrice = parseFloat(row.cells[2].textContent.replace("$", "").trim()); //выделяем цену покупки
-        const amountCrypto = parseFloat(row.cells[5].textContent.replace("$", "").trim()); //выделяем количество для вычисления изменения суммы
+        const purchasePrice = parseFloat(row.cells[2].textContent.replace("$", "")
+            .replace(",", ".").trim()); //выделяем цену покупки и меняем запятую на точку
+        const amountCrypto = parseFloat(row.cells[5].textContent.replace("$", "").replace(",", ".").trim()); //выделяем количество для вычисления изменения суммы
+        let decimals;
+        if (purchasePrice >= 1) decimals = 2;
+        else if (purchasePrice >= 0.01) decimals = 3;
+        else decimals = 7;
 
         fetch(`/Crypto/GetPriceCrypto?symbols=${encodeURIComponent(symbol)}`)
             .then(res => res.json())
             .then(price => {
-                console.log(symbol, currentSumCell);
-
+                const sumCrypto = parseFloat(row.cells[6].textContent.replace("$", "").replace(",", ".").trim()); // Выделяем сумму покупки и меняем запятую на точку
+                row.cells[2].textContent = purchasePrice.toFixed(decimals) + " $";
                 if (!price || isNaN(price)) {
                     currPriceCell.textContent = "нет данных";
                     changePriceCell.textContent = "-";
                     changeSumCell.textContent = "0";
 
-                    const sumCurr = parseFloat(row.cells[6].textContent.replace("$", "".trim()));
-                    currentSumCell.textContent = sumCurr.toFixed(2) + " $";
+                    
+                    currentSumCell.textContent = sumCrypto.toFixed(decimals) + " $";
                 }
                 else {
                     // текущая цена
                     const currentPrice = parseFloat(price);
-                    currPriceCell.textContent = parseFloat(price).toFixed(2) + " $";                  
+                    currPriceCell.textContent = parseFloat(price).toFixed(decimals) + " $";                  
                     const changeProcent = ((currentPrice - purchasePrice) / purchasePrice) * 100;  // Изменение в процентах
-                    const changeFormatPrice = (currentPrice - purchasePrice).toFixed(2) + " (" + changeProcent.toFixed(2) + " %)";   // Для отображения изменения цены и в процентах
+                    const changeFormatPrice = (currentPrice - purchasePrice).toFixed(decimals) + " $" + " (" + changeProcent.toFixed(2) + " %)";   // Для отображения изменения цены и в процентах
                     changePriceCell.textContent = changeFormatPrice;
                     changePriceCell.style.color = changeProcent >= 0 ? "green" : "red"; // Цвет процентов
-
+                    
 
 
                     //Изменение стоимости 
                     const currentSum = currentPrice * amountCrypto;
-                    currentSumCell.textContent = currentSum.toFixed(2) + " $";
-                    const changeFormatSum = (currentPrice - purchasePrice).toFixed(2) + " (" + changeProcent.toFixed(2) + " %)";
+                    currentSumCell.textContent = currentSum.toFixed(decimals) + " $";
+                    const changeFormatSum = (currentSum - sumCrypto).toFixed(2) + " $" + " (" + changeProcent.toFixed(2) + " %)";
                     changeSumCell.textContent = changeFormatSum;
                     changeSumCell.style.color = changeProcent >= 0 ? "green" : "red";   // Цвет изменения суммы
                 }

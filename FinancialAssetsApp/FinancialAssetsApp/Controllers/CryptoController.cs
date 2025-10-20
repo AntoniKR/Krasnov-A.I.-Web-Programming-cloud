@@ -58,6 +58,8 @@ namespace FinancialAssetsApp.Controllers
 
         public async Task<IActionResult> IndexCrypto()    // Список всей крипты
         {
+            Console.WriteLine($"Текущий пользователь: {CurrentUserId}");
+
             var cryptos = await _cryptosService.GetAssetsByID(CurrentUserId);
             //await FixCrypto();    // Для правок в БД
             return View(cryptos);

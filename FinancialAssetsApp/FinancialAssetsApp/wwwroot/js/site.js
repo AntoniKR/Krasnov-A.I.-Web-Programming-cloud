@@ -138,35 +138,42 @@ document.addEventListener("DOMContentLoaded", () => {
         const currPriceCell = row.querySelector(".current-price");
         const changeSumCell = row.querySelector(".change-sum");
         const currentSumCell = row.querySelector(".current-sum");
+        const changePriceCell = row.querySelector(".change-price");
         if (!symbol || !currPriceCell || !changePriceCell) return;
 
         const purchasePrice = parseFloat(row.cells[2].textContent.replace("$", "").trim()); //выделяем цену покупки
-        const amountCrypto = parseFloat(row.cells[4].textContent.replace("$", "").trim()); //выделяем количество для вычисления изменения суммы
+        const amountCrypto = parseFloat(row.cells[5].textContent.replace("$", "").trim()); //выделяем количество для вычисления изменения суммы
 
         fetch(`/Crypto/GetPriceCrypto?symbols=${encodeURIComponent(symbol)}`)
             .then(res => res.json())
             .then(price => {
+                console.log(symbol, currentSumCell);
+
                 if (!price || isNaN(price)) {
                     currPriceCell.textContent = "нет данных";
                     changePriceCell.textContent = "-";
+                    changeSumCell.textContent = "0";
+
+                    const sumCurr = parseFloat(row.cells[6].textContent.replace("$", "".trim()));
+                    currentSumCell.textContent = sumCurr.toFixed(2) + " $";
                 }
                 else {
                     // текущая цена
                     const currentPrice = parseFloat(price);
-                    currPriceCell.textContent = parseFloat(price).toFixed(2) + " $";
+                    currPriceCell.textContent = parseFloat(price).toFixed(2) + " $";                  
+                    const changeProcent = ((currentPrice - purchasePrice) / purchasePrice) * 100;  // Изменение в процентах
+                    const changeFormatPrice = (currentPrice - purchasePrice).toFixed(2) + " (" + changeProcent.toFixed(2) + " %)";   // Для отображения изменения цены и в процентах
+                    changePriceCell.textContent = changeFormatPrice;
+                    changePriceCell.style.color = changeProcent >= 0 ? "green" : "red"; // Цвет процентов
 
-                    // Изменение в процентах
-                    const changeProcent = ((currentPrice - purchasePrice) / purchasePrice) * 100;
-                    const changeFormat = (currentPrice - purchasePrice).toFixed(2) + " (" + changeProcent.toFixed(2) + " %)"
-                    changePriceCell.textContent = changeFormat;
-                    changePriceCell.style.color = changeProcent >= 0 ? "green" : "red";
+
 
                     //Изменение стоимости 
                     const currentSum = currentPrice * amountCrypto;
-                    currentSumCell.textContent = currentSum.toFixed(2);
-                    const changeFormat = (currentPrice - purchasePrice).toFixed(2) + " (" + changeProcent.toFixed(2) + " %)"
-                    changePriceCell.textContent = changeFormat;
-                    changePriceCell.style.color = changeProcent >= 0 ? "green" : "red";
+                    currentSumCell.textContent = currentSum.toFixed(2) + " $";
+                    const changeFormatSum = (currentPrice - purchasePrice).toFixed(2) + " (" + changeProcent.toFixed(2) + " %)";
+                    changeSumCell.textContent = changeFormatSum;
+                    changeSumCell.style.color = changeProcent >= 0 ? "green" : "red";   // Цвет изменения суммы
                 }
                     
             })

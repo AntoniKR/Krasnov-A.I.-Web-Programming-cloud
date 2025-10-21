@@ -1,6 +1,8 @@
 ﻿using Microsoft.IdentityModel.Protocols;
 using System.Net.Http;
 using System.Text.Json;
+using System.Xml.Linq;
+using System.Globalization;
 
 namespace FinancialAssetsApp.Data.Service
 {
@@ -25,15 +27,48 @@ namespace FinancialAssetsApp.Data.Service
         }
         public async Task<decimal> GetMetalRate(string code)    // Получение курса металла
         {
-            var dataAsset = await _httpClient.GetStringAsync("https://www.cbr-xml-daily.ru/daily_json.js");
-            var doc = JsonDocument.Parse(dataAsset);
+            DateTime dateTime = DateTime.UtcNow.ToLocalTime();
+            dateTime = dateTime.AddDays(-1);
+            string day = dateTime.ToString("dd");
+            Console.WriteLine(day);
+            string month = dateTime.ToString("MM");
+            string year = dateTime.ToString("yyyy");
+            try
+            {
+                var url = $"https://www.cbr.ru/scripts/xml_metall.asp?date_req1={day}/{month}/{year}&date_req2={day}/{month}/{year}";
+                Console.WriteLine($"[DEBUG] URL: {url}");
 
-            var currency = doc.RootElement.GetProperty("Valute");
+                var dataAsset = await _httpClient.GetStringAsync(url);
 
-            if (currency.TryGetProperty(code, out var rateInfo))
-                return rateInfo.GetProperty("Value").GetDecimal();
+                var doc = XDocument.Parse(dataAsset);
+                var record = doc.Descendants("Record")
+                    .FirstOrDefault(r => r.Attribute("Code")?.Value == code);
+                if (record == null)
+                    throw new Exception($"Нет записи с Code={code}");
 
-            throw new Exception($"Валюта {code} не найдена");
+                var sell = record.Element("Sell")!.Value.Replace(',', '.');
+                return decimal.Parse(sell, NumberStyles.Any, CultureInfo.InvariantCulture);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при получении металла: {ex.Message}");
+                throw;
+            }
+            /*var url = $"https://www.cbr.ru/scripts/xml_metall.asp?date_req1={day}/{month}/{year}&date_req2={day}/{month}/{year}";
+            
+            var dataAsset = await _httpClient.GetStringAsync(url);
+
+            var dataAsset = await _httpClient.GetStringAsync($"https://www.cbr.ru/scripts/xml_metall.asp?date_req1={day}/{month}/{year}&date_req2={day}/{month}/{year}");
+            
+            var doc = XDocument.Parse(dataAsset);
+            var record = doc.Descendants("Record")
+                .FirstOrDefault(r => r.Attribute("Code")?.Value == code);
+
+            var sell = record.Element("Sell")!.Value.Replace(',', '.');
+            return decimal.Parse(sell, NumberStyles.Any, CultureInfo.InvariantCulture);
+
+
+            throw new Exception($"Металл {code} не найден");*/
         }
         public async Task<decimal> RUgetStockPrice(string ticker)
         {

@@ -66,18 +66,17 @@ namespace FinancialAssetsApp.Controllers
             var data = await _stocksService.GetChartTicker(CurrentUserId);
             return Json(data);
         }
+
+
+
+
+
         /*public async Task<IActionResult> GetChartC()
         {
             var data = await _stocksService.GetChartCountry(CurrentUserId);
             return Json(data);
-        }*/
-
-
-
-
-
-
-        /*public async Task<IActionResult> FixSums()
+        }
+        public async Task<IActionResult> FixSums()
         {
             await _stocksService.FixOldStocks();
             return RedirectToAction("IndexStocks");

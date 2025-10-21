@@ -45,7 +45,7 @@ namespace FinancialAssetsApp.Data.Service
             
             await _context.SaveChangesAsync();  // Асинхронно сохраняем изменения в БД
         }
-        public async Task Delete(int id)    //Удаление акции
+        public async Task Delete(int id)    //Удаление криптовалюты
         {
             var crypto = await _context.Cryptos.FindAsync(id);
             if(crypto != null)
@@ -54,15 +54,22 @@ namespace FinancialAssetsApp.Data.Service
                 await _context.SaveChangesAsync();
             }
         }
-        public async Task<Crypto?> GetAssetById(int id)  //получение акции для удаления
+        public async Task<Crypto?> GetAssetById(int id)  //получение криптовалюты для удаления
         {
             return await _context.Cryptos.FirstOrDefaultAsync(x => x.Id == id);
         }
-        public async Task<IEnumerable<Crypto>> GetAssetsByID(int userId)     //Перечисление всех акций пользователя
+        public async Task<IEnumerable<Crypto>> GetAssetsByID(int userId)     //Перечисление всей крипты пользователя
         {
             var crypto = await _context.Cryptos
                 .Where(s => s.UserId == userId)
-                .ToListAsync();
+                .ToListAsync(); // Получение таблицы с криптой пользователя
+
+            decimal rate = await _assetdata.GetCurrencyRate("USD"); ;   // Курс доллара           
+            foreach (var item in crypto)    // Обновляем стоимость крипты в рублях
+            {
+                item.SumCryptoToRuble = item.SumCrypto * rate;
+                _context.Cryptos.Update(item);
+            }
             return crypto;
         }
         
@@ -72,7 +79,7 @@ namespace FinancialAssetsApp.Data.Service
             return crypto;
         }
 
-        public async Task<IEnumerable<ForChart>> GetChartTicker(int userId) //График по акциям
+        public async Task<IEnumerable<ForChart>> GetChartTicker(int userId) //График по криптовалюте
         {
             var data = await _context.Cryptos
                 .Where(s => s.UserId == userId)

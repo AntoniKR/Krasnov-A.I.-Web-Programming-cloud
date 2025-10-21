@@ -14,15 +14,20 @@ namespace FinancialAssetsApp.Controllers
     public class MetalsController : Controller
     {
         private readonly IMetalsService _metalService;
+        private readonly IAssetData _assetdata; // Для парсинга различных курсов
         private int CurrentUserId => HttpContext.Session.GetInt32("UserId") ?? 0;
-        public MetalsController(IMetalsService metalService)
+        public MetalsController(IMetalsService metalService, IAssetData assetdata)
         {
             _metalService = metalService;
+            _assetdata = assetdata;
         }
 
         public async Task<IActionResult> IndexMetals()    // Список всех акций
         {
             var metals = await _metalService.GetAssetsByID(CurrentUserId);  // Перечисление всех данных из БД
+
+            Console.WriteLine(_assetdata.GetMetalRate("1"));
+
             return View("IndexMetals", metals);
         }
         private void FillListMetals()    // Метод для списка металлов 
@@ -31,7 +36,7 @@ namespace FinancialAssetsApp.Controllers
             {
                 new SelectListItem {Value = "Золото", Text = "Золото"},
                 new SelectListItem {Value = "Серебро", Text = "Серебро"},
-                new SelectListItem {Value = "Паладий", Text = "Паладий"},
+                new SelectListItem {Value = "Палладий", Text = "Палладий"},
                 new SelectListItem {Value = "Платина", Text = "Платина"}
             };
         }

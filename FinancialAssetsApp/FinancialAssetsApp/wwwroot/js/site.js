@@ -48,6 +48,19 @@ fetchJson('/Stocks/GetChartT').then(data => {
     });
 });
 
+// Круговая диаграмма по тикерам иностранных компаний
+fetchJson('/StocksUSD/GetChartT').then(data => {
+    if (!data) return;
+    createChart('TickerPieUSD', {
+        type: 'pie',
+        data: {
+            labels: data.map(d => d.label),
+            datasets: [{ data: data.map(d => d.total) }]
+        },
+        options: { responsive: false, maintainAspectRatio: false }
+    });
+});
+
 // Курс USD
 fetchJson('/Home/GetRateContr').then(rate => {
     if (rate != null) {
@@ -163,27 +176,25 @@ document.addEventListener("DOMContentLoaded", () => {
             .then(price => {
                 const sumCrypto = parseFloat(row.cells[6].textContent.replace("$", "").replace(",", ".").trim()); // Выделяем сумму покупки и меняем запятую на точку
                 row.cells[2].textContent = purchasePrice.toFixed(decimals) + " $";
-                if (!price || isNaN(price)) {
+                if (!price || isNaN(price)) {   // Если тикера крипты нет на Bybit, то выдаем данные ниже
                     currPriceCell.textContent = "нет данных";
                     changePriceCell.textContent = "-";
-                    changeSumCell.textContent = "0";
-
-                    
+                    changeSumCell.textContent = "0";                    
                     currentSumCell.textContent = sumCrypto.toFixed(decimals) + " $";
                 }
                 else {
-                    // текущая цена
+                    
                     const currentPrice = parseFloat(price);
-                    currPriceCell.textContent = parseFloat(price).toFixed(decimals) + " $";                  
+                    currPriceCell.textContent = parseFloat(price).toFixed(decimals) + " $";     //Текущая цена криптовалюты             
                     const changeProcent = ((currentPrice - purchasePrice) / purchasePrice) * 100;  // Изменение в процентах
                     const changeFormatPrice = (currentPrice - purchasePrice).toFixed(decimals) + " $" + " (" + changeProcent.toFixed(2) + " %)";   // Для отображения изменения цены и в процентах
-                    changePriceCell.textContent = changeFormatPrice;
+                    changePriceCell.textContent = changeFormatPrice;    //Изменение в долларах
                     changePriceCell.style.color = changeProcent >= 0 ? "green" : "red"; // Цвет процентов
                     
 
 
                     //Изменение стоимости 
-                    const currentSum = currentPrice * amountCrypto;
+                    const currentSum = currentPrice * amountCrypto; //Текущая стоимость крипты
                     currentSumCell.textContent = currentSum.toFixed(decimals) + " $";
                     const changeFormatSum = (currentSum - sumCrypto).toFixed(2) + " $" + " (" + changeProcent.toFixed(2) + " %)";
                     changeSumCell.textContent = changeFormatSum;

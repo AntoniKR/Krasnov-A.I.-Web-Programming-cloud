@@ -61,6 +61,13 @@ namespace FinancialAssetsApp.Data.Service
             var stocks = await _context.StocksUSD
                 .Where(s => s.UserId == userId)
                 .ToListAsync();
+
+            decimal rate = await _assetdata.GetCurrencyRate("USD"); ;   // Курс доллара           
+            foreach (var item in stocks)    // Обновляем стоимость акций в рублях
+            {
+                item.SumStocksToRuble = item.SumStocks * rate;
+                _context.StocksUSD.Update(item);
+            }
             return stocks;
         }
         
@@ -78,7 +85,7 @@ namespace FinancialAssetsApp.Data.Service
                 .Select(g => new ForChart
                 {
                     Label = g.Key,
-                    Total = g.Sum(e => e.SumStocks) ?? 0m
+                    Total = g.Sum(e => e.SumStocksToRuble) ?? 0m
                 })
                 .ToListAsync();
             return data;

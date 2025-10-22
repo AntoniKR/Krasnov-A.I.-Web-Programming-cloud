@@ -20,7 +20,7 @@ namespace FinancialAssetsApp.Models
         [Range(0.000001, double.MaxValue, ErrorMessage = "Количество криптовалюты должно быть больше 0")] //Ограничение на ввод
         public decimal AmountCrypto { get; set; }        // Количество криптовалюты
         public decimal SumCrypto { get; set; }        // Стоимость криптовалюты
-        public decimal? SumCryptoToRuble { get; set; }        // Стоимость криптовалюты в рублях
+        public decimal SumCryptoToRuble { get; set; }        // Стоимость криптовалюты в рублях
         public DateTime DateAddStock { get; set; } = DateTime.UtcNow;    // Время обновления
 
         [Required]

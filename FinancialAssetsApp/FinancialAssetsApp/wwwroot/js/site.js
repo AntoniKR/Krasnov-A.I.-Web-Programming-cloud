@@ -36,6 +36,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
+
+
+
+
 // Круговая диаграмма по тикерам RUB
 fetchJson('/Stocks/GetChartT').then(data => {
     if (!data) return;
@@ -63,13 +67,25 @@ fetchJson('/StocksUSD/GetChartT').then(data => {
 });
 
 // Курс USD
-fetchJson('/Home/GetRateContr').then(rate => {
+/*fetchJson('/Home/GetRateContr').then(rate => {
     if (rate != null) {
         const el = document.getElementById("RateUSD");
         if (el) el.innerHTML = rate.toFixed(2) + " ₽";
     }
-});
-
+});*/
+async function getUsdRate() {
+    try {
+        const rate = await fetchJson('/Home/GetRateContr');
+        if (rate != null) {
+            const el = document.getElementById("RateUSD");
+            if (el) el.innerHTML = rate.toFixed(2) + " ₽";
+            return rate;
+        }
+    } catch (err) {
+        console.error("Ошибка получения курса доллара:", err);
+        return null;
+    }
+}
 // Круговая диаграмма с общей суммой активов
 fetchJson('/Home/GetAssetsChart').then(data => {
     if (!data) return;
@@ -128,10 +144,10 @@ fetchJson('/Crypto/GetChartTicker').then(data => {
     });
 });
 
-// Круговая диаграмма Металлы
+// Круговая диаграмма покупки Металлы
 fetchJson('/Metals/GetChartT').then(data => {
     if (!data) return;
-    createChart('MetalsPie', {
+    createChart('PurchasePie', {
         type: 'pie',
         data: {
             labels: data.map(d => d.label),
@@ -154,20 +170,31 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 // Текущие цены крипты
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+
+    const rateUSD = await getUsdRate(); //Для курса доллара и текущей стоимости крипты
+    const chartDataCurrent = [];    //Для построения диаграммы
+    const rows = document.querySelectorAll("tr[data-cryptos]");  //для графика
+    let count = 0;  //Счетчик для построения графика
+
     document.querySelectorAll("tr[data-cryptos]").forEach(row => {
-        const symbol = row.getAttribute("data-cryptos");
-        const currPriceCell = row.querySelector(".current-price");
-        const changeSumCell = row.querySelector(".change-sum");
+
+        const symbol = row.getAttribute("data-cryptos");              //этот блок объявляет переменные
+        const currPriceCell = row.querySelector(".current-price");    //для подсчета изменений
+        const changeSumCell = row.querySelector(".change-sum");       //в портфеле
         const currentSumCell = row.querySelector(".current-sum");
         const changePriceCell = row.querySelector(".change-price");
-        
+        const changeSumRUBCell = row.querySelector(".change-sumRUB");
+        const currentSumRUBCell = row.querySelector(".current-sumRUB");
+
         if (!symbol || !currPriceCell || !changePriceCell) return;
 
         const purchasePrice = parseFloat(row.cells[2].textContent.replace("$", "")
             .replace(",", ".").trim()); //выделяем цену покупки и меняем запятую на точку
         const amountCrypto = parseFloat(row.cells[5].textContent.replace("$", "").replace(",", ".").trim()); //выделяем количество для вычисления изменения суммы
-        let decimals;
+        const sumRUB = parseFloat(row.cells[9].textContent.replace("₽", "").replace(",", ".").trim()); //выделяем количество для вычисления изменения суммы
+
+        let decimals;   //Для разряда числа
         if (purchasePrice >= 1) decimals = 2;
         else if (purchasePrice >= 0.01) decimals = 3;
         else decimals = 7;
@@ -180,13 +207,23 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (!price || isNaN(price)) {   // Если тикера крипты нет на Bybit, то выдаем данные ниже
                     currPriceCell.textContent = "нет данных";
                     changePriceCell.textContent = "-";
-                    changeSumCell.textContent = "0";                    
+                    changeSumCell.textContent = "-";                    
                     currentSumCell.textContent = sumCrypto.toFixed(decimals) + " $";
+                    changeSumRUBCell.textContent = "-";                                     
+
+                    const currentSum = purchasePrice * amountCrypto; //Текущая стоимость крипты
+                    const currentSumRUB = currentSum * rateUSD; //Текущая стоимость в рублях
+                    currentSumRUBCell.textContent = currentSumRUB.toFixed(2) + " ₽";
+
+                    const changeProcentSumRUB = ((currentSumRUB - sumRUB) / sumRUB) * 100;  // Изменение в процентах
+                    const changeFormatSumRUB = (currentSumRUB - sumRUB).toFixed(2) + " ₽" + " (" + changeProcentSumRUB.toFixed(2) + " %)";
+                    changeSumRUBCell.textContent = changeFormatSumRUB;
+                    changeSumRUBCell.style.color = changeProcentSumRUB >= 0 ? "green" : "red";   // Цвет изменения суммы      
+                    chartDataCurrent.push({ label: symbol, value: currentSumRUB });
                 }
-                else {
-                    
+                else {                  
                     const currentPrice = parseFloat(price);
-                    currPriceCell.textContent = parseFloat(price).toFixed(decimals) + " $";     //Текущая цена криптовалюты  
+                    currPriceCell.textContent = parseFloat(price).toFixed(2) + " $";     //Текущая цена криптовалюты  
                     
                     const changeProcent = ((currentPrice - purchasePrice) / purchasePrice) * 100;  // Изменение в процентах
                     const changeFormatPrice = (currentPrice - purchasePrice).toFixed(decimals) + " $" + " (" + changeProcent.toFixed(2) + " %)";   // Для отображения изменения цены и в процентах
@@ -199,39 +236,68 @@ document.addEventListener("DOMContentLoaded", () => {
                     const changeFormatSum = (currentSum - sumCrypto).toFixed(2) + " $" + " (" + changeProcent.toFixed(2) + " %)";
                     changeSumCell.textContent = changeFormatSum;
                     changeSumCell.style.color = changeProcent >= 0 ? "green" : "red";   // Цвет изменения суммы
-                }
-                    
+
+                    //Изменение стоимости в рублях
+                    const currentSumRUB = currentSum * rateUSD; //Текущая стоимость в рублях
+                    currentSumRUBCell.textContent = currentSumRUB.toFixed(2) + " ₽";
+
+                    const changeProcentSumRUB = ((currentSumRUB - sumRUB) / sumRUB) * 100;  // Изменение в процентах
+                    const changeFormatSumRUB = (currentSumRUB - sumRUB).toFixed(2) + " ₽" + " (" + changeProcentSumRUB.toFixed(2) + " %)";
+                    changeSumRUBCell.textContent = changeFormatSumRUB;
+                    changeSumRUBCell.style.color = changeProcentSumRUB >= 0 ? "green" : "red";   // Цвет изменения суммы
+
+                    chartDataCurrent.push({ label: symbol, value: currentSumRUB });
+                }                   
             })
             .catch(() => {
                 currPriceCell.textContent = "ошибка";
                 changePriceCell.textContent = "-";
             })
+            .finally(() => {    //Когда обработали строку, проверяем, можно ли строить диаграмму
+                
+                count++;
+                if (count === rows.length) {
+                    createChart('CurrentCryptoPie', {
+                        type: 'pie',
+                        data: {
+                            labels: chartDataCurrent.map(d => d.label),
+                            datasets: [{ data: chartDataCurrent.map(d => d.value) }]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false }
+                    });
+                }
+            });  
                 
     });
 });
 
-// Текущие цены металлов
+// Текущие цены и диаграмма Металлы
 document.addEventListener("DOMContentLoaded", () => {
+
+    const chartDataCurrent = [];    //Для построения диаграммы
+    const rows = document.querySelectorAll("tr[data-metals]");  //для графика
+    let count = 0;  //Счетчик для построения графика
     document.querySelectorAll("tr[data-metals]").forEach(row => {
-        const symbol = row.getAttribute("data-metals");
-        const currPriceCell = row.querySelector(".current-price");
-        const changeSumCell = row.querySelector(".change-sum");
+
+        const symbol = row.getAttribute("data-metals");             //этот блок объявляет переменные
+        const currPriceCell = row.querySelector(".current-price");  //для подсчета изменений
+        const changeSumCell = row.querySelector(".change-sum");     //в портфеле
         const currentSumCell = row.querySelector(".current-sum");
 
         if (!symbol || !currPriceCell) return;
 
         
         const amountMetal = parseFloat(row.cells[3].textContent.replace(",", ".").trim()); //выделяем количество для вычисления изменения суммы
-        let decimals = 2;
+        let decimals = 2;   // Для разрядности чисел
 
         fetch(`/Metals/PriceMetal?nameMetal=${encodeURIComponent(symbol)}`)
             .then(res => res.text())
             .then(price => {
-                console.log(price);
+                //console.log(price);
                 const sumMetal = parseFloat(row.cells[4].textContent.replace("₽", "").replace(",", ".").trim()); // Выделяем сумму покупки и меняем запятую на точку
 
                 const currentPrice = parseFloat(price.replace(",", "."));
-                currPriceCell.textContent = parseFloat(currentPrice).toFixed(decimals) + " ₽";     //Текущая цена металла             
+                currPriceCell.textContent = parseFloat(currentPrice).toFixed(decimals) + " ₽"; //Текущая цена металла             
 
                 //Изменение стоимости 
                 const currentSum = currentPrice * amountMetal; //Текущая стоимость крипты
@@ -240,179 +306,25 @@ document.addEventListener("DOMContentLoaded", () => {
                 const changeFormatSum = (currentSum - sumMetal).toFixed(2) + " ₽" + " (" + changeProcent.toFixed(2) + " %)";
                 changeSumCell.textContent = changeFormatSum;
                 changeSumCell.style.color = changeProcent >= 0 ? "green" : "red";   // Цвет изменения суммы
+
+                chartDataCurrent.push({ label: symbol, value: currentSum });
             })
-            .catch(() => {
-                currPriceCell.textContent = "ошибка";              
+            .catch(() => {  //Ловим ошибку
+                currPriceCell.textContent = "ошибка";
             })
-
-    });
-});
-/*
-fetch('/Stocks/GetChartT')   // Круговая Диаграмма по тикерам
-    .then(response => response.json())
-    .then(data => {
-        const ctx = document.getElementById('TickerPie');
-        new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: data.map(d => d.label),
-                datasets: [{
-                    data: data.map(d => d.total),
-                }]
-            },
-            options: {
-                responsive: false,
-                maintainAspectRatio: false
-            }
-        });
-    });
-
-fetch('/StocksUSD/GetChartT')   // Круговая Диаграмма по тикерам $
-    .then(response => response.json())
-    .then(data => {
-        const ctx = document.getElementById('TickerPie');
-        new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: data.map(d => d.label),
-                datasets: [{
-                    data: data.map(d => d.total),
-                }]
-            },
-            options: {
-                responsive: false,
-                maintainAspectRatio: false
-            }
-        });
-    });
-
-fetch('/Home/GetRateContr')   // Запрос к курсу
-    .then(response => response.json())
-    .then(rate => {
-        document.getElementById("RateUSD").innerHTML = rate.toFixed(2) + " ₽";
-    });
-
-fetch('/Home/GetAssetsChart')   // Круговая Диаграмма с общей суммой активов
-    .then(response => response.json())
-    .then(data => {
-        const totalSum = data.reduce((sum, item) => sum + item.total, 0);
-
-        const ctx = document.getElementById('SummPie');
-        new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: data.map(d => d.label),
-                datasets: [{
-                    data: data.map(d => d.total),
-                }]
-            },
-            options: {
-                responsive: false,
-                maintainAspectRatio: false
-            }
-        });
-        const ctxBar = document.getElementById('SummBar');
-        new Chart(ctxBar, {
-            type: 'bar',
-            data: {
-                labels: data.map(d => d.label),
-                datasets: [{
-                    label: "Доля в портфеле %",
-                    data: data.map(d => ((d.total / totalSum) * 100).toFixed(2)),
-                }]
-            },
-            options: {
-                responsive: false,
-                maintainAspectRatio: false,
-                plugins: {
-                    datalabels: {
-                        anchor: 'end',
-                        align: 'top',
-                        offset: -2,
-                        formatter: function (value) {
-                            return value + "%";
+            .finally(() => {    //Когда обработали строку, проверяем, можно ли строить диаграмму
+                count++;
+                if (count === rows.length) {
+                    createChart('CurrentPricePie', {
+                        type: 'pie',
+                        data: {
+                            labels: chartDataCurrent.map(d => d.label),
+                            datasets: [{ data: chartDataCurrent.map(d => d.value) }]
                         },
-                        font: {
-                            weight: 'bold'
-                        },
-                        color: '#000'
-                    }
-                },
-            },
-            
-        });
-        document.getElementById("Summ").innerHTML = totalSum.toLocaleString("ru-RU", {
-            style: "currency",
-            currency: "RUB"
-        });
-
-    });
-fetch('/Crypto/GetChartTicker')   // Круговая Диаграмма КРИПТА
-    .then(response => response.json())
-    .then(data => {
-        const ctx = document.getElementById('CryptoPie');
-        new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: data.map(d => d.label),
-                datasets: [{
-                    data: data.map(d => d.total),
-                }]
-            },
-            options: {
-                responsive: false,
-                maintainAspectRatio: false
-            }
-        });
-    });
-fetch('/Metals/GetChartT')   // Круговая Диаграмма металлы
-    .then(response => response.json())
-    .then(data => {
-        const ctx = document.getElementById('MetalsPie');
-        new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: data.map(d => d.label),
-                datasets: [{
-                    data: data.map(d => d.total),
-                }]
-            },
-            options: {
-                responsive: false,
-                maintainAspectRatio: false
-            }
-        });
+                        options: { responsive: true, maintainAspectRatio: false }
+                    });
+                }
+            });    
     });
 
-document.addEventListener("DOMContentLoaded", function () {
-
-    const tickerInput = document.getElementById("TickerInput"); //Проверка поля для тикера
-    if (!tickerInput) return;
-
-    fetch("https://api-testnet.bybit.com/v5/market/tickers?category=spot")
-        .then(result => result.json())
-        .then(json => {
-            if (json && json.retCode === 0 && json.result && json.result.list) {
-                const tickers = json.result.list.map(x => x.symbol);
-                // jQuery UI autocomplete
-                $(tickerInput).autocomplete({ source: tickers, minLength: 1 });
-            }
-        })
-        .catch(console.error);
 });
-
-document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll("tr[data-symbol]").forEach(row => {
-        const symbol = row.getAttribute("data-symbol");
-        const priceCell = row.querySelector(".current-price");
-        if (!symbol || !priceCell) return;
-
-        fetch(`/Crypto/GetPriceCrypto?symbols=${encodeURIComponent(symbol)}`)
-            .then(res => res.json())
-            .then(price => {
-                if (price === "not found") priceCell.textContent = "нет данных";
-                else priceCell.textContent = parseFloat(price).toFixed(2) + " $";
-            })
-            .catch(() => priceCell.textContent = "ошибка");
-    });
-});*/

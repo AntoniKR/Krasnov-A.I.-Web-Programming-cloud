@@ -64,12 +64,12 @@ namespace FinancialAssetsApp.Data.Service
                 .Where(s => s.UserId == userId)
                 .ToListAsync(); // Получение таблицы с криптой пользователя
 
-            decimal rate = await _assetdata.GetCurrencyRate("USD"); ;   // Курс доллара           
+            /*decimal rate = await _assetdata.GetCurrencyRate("USD"); ;   // Курс доллара           
             foreach (var item in crypto)    // Обновляем стоимость крипты в рублях
             {
                 item.SumCryptoToRuble = item.SumCrypto * rate;
                 _context.Cryptos.Update(item);
-            }
+            }*/
             return crypto;
         }      
 
@@ -81,7 +81,7 @@ namespace FinancialAssetsApp.Data.Service
                 .Select(g => new ForChart
                 {
                     Label = g.Key,
-                    Total = g.Sum(e => e.SumCryptoToRuble) ?? 0m
+                    Total = g.Sum(e => e.SumCryptoToRuble)
                 })
                 .ToListAsync();
             return data;

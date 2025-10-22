@@ -12,13 +12,15 @@
                 <th>Тикер</th>
                 <th>Название криптовалюты</th>
                 <th>Цена покупки</th>
-                <th>Изменение % </th>
+                <th>Изменение</th>
                 <th>Текущая Цена</th>
                 <th>Количество</th>
                 <th>Стоимость покупки</th>
-                <th>Изменение стоимости</th>
+                <th>Изменение</th>
                 <th>Текущая стоимость</th>
-                <th>Стоимость в рублях</th>
+                <th>Стоимость покупки в рублях</th>
+                <th>Изменение</th>
+                <th>Текущая стоимость в рублях</th>
                 <th>Дата добавления </th>
                 <th></th>
             </tr>
@@ -37,7 +39,9 @@
 
                     <td style="font-weight: bold" class="change-sum">Загрузка...</td>
                     <td class="current-sum">Загрузка...</td>
-                    <td>@item.SumCryptoToRuble ₽</td>
+                    <td>@item.SumCryptoToRuble.ToString("F2") ₽</td>
+                    <td style="font-weight: bold" class="change-sumRUB">Загрузка...</td>
+                    <td class="current-sumRUB">Загрузка...</td>
 
                     <td>@item.DateAddStock.ToString("yyyy-MM-dd")</td>
                     <td>
@@ -55,11 +59,15 @@
     <a asp-action="Create" class="btn btn-primary">Добавить криптовалюту</a>
 </div>
 
-<h2>Круговая диаграмма распределения криптовалюты</h2>
-<div class="d-flex justify-content-center align-items-center flex-column">
-    <div class="text-center">
+<h2 class="text-center mb-4">Круговая диаграмма распределения криптовалюты</h2>
+<div class="d-flex justify-content-center align-items-start gap-4">
+    <div class="chart-container">
         <canvas style="width: 450px; height: 450px" id="CryptoPie"></canvas>
-        <h3>По Криптовалюте</h3>
+        <h3 class="text-center">По сумме покупки</h3>
+    </div>
+    <div class="chart-container" style="width: 450px; height: 450px">
+        <canvas id="CurrentCryptoPie"></canvas>
+        <h3 class="text-center">По текущей цене</h3>
     </div>
 </div>
 <script src="~/js/site.js" asp-append-version="true"></script>

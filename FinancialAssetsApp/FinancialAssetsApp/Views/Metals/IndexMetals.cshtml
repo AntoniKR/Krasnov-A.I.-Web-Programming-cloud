@@ -52,11 +52,15 @@
     <a asp-action="Create" class="btn btn-primary">Добавить металл</a>
 </div>
 
-<h2>Круговая диаграмма распределения металла</h2>
-<div class="d-flex justify-content-center align-items-center flex-column">
-    <div class="text-center">
-        <canvas style="width: 450px; height: 450px" id="MetalsPie"></canvas>
-        <h3>По Металлам</h3>
+<h2 class="text-center mb-4">Круговая диаграмма распределения металла</h2>
+<div class="d-flex justify-content-center align-items-start gap-4">
+    <div class="chart-container">
+        <canvas style="width: 450px; height: 450px" id="PurchasePie"></canvas>
+        <h3>По сумме покупки</h3>
+    </div>
+    <div class="chart-container" style="width: 450px; height: 450px">
+        <canvas id="CurrentPricePie"></canvas>
+        <h3 class="text-center">По текущей цене</h3>
     </div>
 </div>
 <script src="~/js/site.js" asp-append-version="true"></script>

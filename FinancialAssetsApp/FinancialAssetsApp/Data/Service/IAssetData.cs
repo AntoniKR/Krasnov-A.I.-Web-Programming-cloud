@@ -3,7 +3,9 @@
     public interface IAssetData     //Интерфейс для курса различных активов
     {
         Task<decimal> GetCurrencyRate(string code);    //курс валют
-        Task<decimal> GetMetalRate(string code);    // курс металлов
+        Task<List<string>> GetTickersCrypto(string symbols);    //Список крипты для добавления 
+        Task<decimal> GetPriceCrypto(string symbol);    //Получение текущей цены крипты
+        Task<decimal> GetMetalPrice(string code);    // курс металлов
         Task<decimal> RUgetStockPrice(string ticker);    // курс металлов
 
     }

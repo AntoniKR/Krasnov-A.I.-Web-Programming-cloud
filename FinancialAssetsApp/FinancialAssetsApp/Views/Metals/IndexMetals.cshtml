@@ -10,8 +10,13 @@
             <tr>
                 <th>Название металла</th>
                 <th>Цена</th>
+                <th>Текущая Цена</th>
                 <th>Количество</th>
                 <th>Стоимость</th>
+
+                <th>Изменение стоимости</th>
+                <th>Текущая стоимость</th>
+
                 <th>Дата добавления </th>
                 <th></th>
             </tr>
@@ -19,11 +24,18 @@
         <tbody>
             @foreach (var item in Model)
             {
-                <tr>
+                <tr data-metals="@item.NameMetal">
                     <td>@item.NameMetal</td>
                     <td>@item.Price ₽</td>
+
+                    <td class="current-price">Загрузка...</td>
+
                     <td>@item.AmountMetal</td>
                     <td>@item.SumMetals ₽</td>
+
+                    <td style="font-weight: bold" class="change-sum">Загрузка...</td>
+                    <td class="current-sum">Загрузка...</td>
+
                     <td>@item.DateAddStock.ToString("yyyy-MM-dd")</td>
                     <td>
                         <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Удалить</a>

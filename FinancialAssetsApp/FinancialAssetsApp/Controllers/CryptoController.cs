@@ -11,47 +11,26 @@ namespace FinancialAssetsApp.Controllers
 {
     public class CryptoController : Controller
     {
-        public readonly ICryptosService _cryptosService;
+        private readonly ICryptosService _cryptosService;
         private readonly HttpClient _httpClient;
+        private readonly IAssetData _assetdata;
         private int CurrentUserId => HttpContext.Session.GetInt32("UserId") ?? 0;
-        public CryptoController(ICryptosService cryptosService, HttpClient httpClient) 
+        public CryptoController(ICryptosService cryptosService, HttpClient httpClient, IAssetData assetdata) 
         {
             _cryptosService = cryptosService;
             _httpClient = httpClient;
+            _assetdata = assetdata;
         }
-        public async Task<IActionResult> GetTickersCrypto(string symbols)   //Получение списка крипта с Bybit
+        public async Task<IActionResult> TickersCrypto(string symbol)   //Получение списка крипта с Bybit
         {
-            var urlTickers = "https://api.bybit.com/v5/market/tickers?category=spot";
-            var response = await _httpClient.GetStringAsync(urlTickers);
-            var json = JsonDocument.Parse(response);
-
-            var tickers = json.RootElement
-                .GetProperty("result")
-                .GetProperty("list")
-                .EnumerateArray()
-                .Select(x => x.GetProperty("symbol").GetString())
-                .Where(s => string.IsNullOrEmpty(symbols) || s.StartsWith(symbols.ToUpper()))
-                .Take(20)
-                .ToList();
+            var tickers = await _assetdata.GetTickersCrypto(symbol);
             return Json(tickers);
         }
 
         
-        public async Task<IActionResult> GetPriceCrypto (string symbols)    //Получение текущей цены крипты
+        public async Task<IActionResult> PriceCrypto (string symbol)    //Получение текущей цены крипты
         {
-            var urlTickers = "https://api.bybit.com/v5/market/tickers?category=spot";
-            var response = await _httpClient.GetStringAsync(urlTickers);
-            var json = JsonDocument.Parse(response);
-
-            var ticker = json.RootElement
-                .GetProperty("result")
-                .GetProperty("list")
-                .EnumerateArray()
-                .FirstOrDefault(x => x.GetProperty("symbol").GetString() == symbols);
-
-            if (ticker.ValueKind == JsonValueKind.Undefined)
-                return Json("not found(");
-            var price = ticker.GetProperty("lastPrice").GetString();
+            var price = await _assetdata.GetPriceCrypto(symbol);
             return Json(price);
 
         }

@@ -25,9 +25,6 @@ namespace FinancialAssetsApp.Controllers
         public async Task<IActionResult> IndexMetals()    // Список всех акций
         {
             var metals = await _metalService.GetAssetsByID(CurrentUserId);  // Перечисление всех данных из БД
-
-            Console.WriteLine(_assetdata.GetMetalRate("1"));
-
             return View("IndexMetals", metals);
         }
         private void FillListMetals()    // Метод для списка металлов 
@@ -42,6 +39,7 @@ namespace FinancialAssetsApp.Controllers
         }
         public IActionResult Create()   // Страница добавления акции
         {
+            
             FillListMetals();
             return View();
         }
@@ -49,6 +47,7 @@ namespace FinancialAssetsApp.Controllers
         public async Task<IActionResult> Create(Metal metal)
         {
             metal.UserId = CurrentUserId;  //Привязка к текущему пользователю
+            
             if (!ModelState.IsValid)
             {
                 FillListMetals();
@@ -59,6 +58,7 @@ namespace FinancialAssetsApp.Controllers
         }
         public async Task<IActionResult> Delete(int id)
         {
+            
             var metal = await _metalService.GetAssetById(id);
             if (metal == null || metal.UserId != CurrentUserId)    //Проверка на акции текущего пользователя
                 return NotFound();
@@ -79,8 +79,11 @@ namespace FinancialAssetsApp.Controllers
             var data = await _metalService.GetChartTicker(CurrentUserId);
             return Json(data);
         }
-
-
+        public async Task<IActionResult> PriceMetal(string nameMetal)   //Получение цены на металлы
+        {
+            var price = await _assetdata.GetMetalPrice(nameMetal);
+            return Json(price);
+        }
 
 
         /*public async Task<IActionResult> FixSums()

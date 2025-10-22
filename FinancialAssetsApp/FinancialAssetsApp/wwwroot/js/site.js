@@ -27,7 +27,8 @@ async function fetchJson(url) {
     }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+//Изменение точки на запятую
+document.addEventListener("DOMContentLoaded", () => {   
     document.querySelectorAll('input[name="Price"], input[name="AmountCrypto"]').forEach(input => {
         input.addEventListener("input", () => {
             input.value = input.value.replace(".", ",");
@@ -154,8 +155,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 // Текущие цены крипты
 document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll("tr[data-symbol]").forEach(row => {
-        const symbol = row.getAttribute("data-symbol");
+    document.querySelectorAll("tr[data-cryptos]").forEach(row => {
+        const symbol = row.getAttribute("data-cryptos");
         const currPriceCell = row.querySelector(".current-price");
         const changeSumCell = row.querySelector(".change-sum");
         const currentSumCell = row.querySelector(".current-sum");
@@ -171,7 +172,7 @@ document.addEventListener("DOMContentLoaded", () => {
         else if (purchasePrice >= 0.01) decimals = 3;
         else decimals = 7;
 
-        fetch(`/Crypto/GetPriceCrypto?symbols=${encodeURIComponent(symbol)}`)
+        fetch(`/Crypto/PriceCrypto?symbol=${encodeURIComponent(symbol)}`)
             .then(res => res.json())
             .then(price => {
                 const sumCrypto = parseFloat(row.cells[6].textContent.replace("$", "").replace(",", ".").trim()); // Выделяем сумму покупки и меняем запятую на точку
@@ -185,13 +186,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 else {
                     
                     const currentPrice = parseFloat(price);
-                    currPriceCell.textContent = parseFloat(price).toFixed(decimals) + " $";     //Текущая цена криптовалюты             
+                    currPriceCell.textContent = parseFloat(price).toFixed(decimals) + " $";     //Текущая цена криптовалюты  
+                    
                     const changeProcent = ((currentPrice - purchasePrice) / purchasePrice) * 100;  // Изменение в процентах
                     const changeFormatPrice = (currentPrice - purchasePrice).toFixed(decimals) + " $" + " (" + changeProcent.toFixed(2) + " %)";   // Для отображения изменения цены и в процентах
                     changePriceCell.textContent = changeFormatPrice;    //Изменение в долларах
-                    changePriceCell.style.color = changeProcent >= 0 ? "green" : "red"; // Цвет процентов
-                    
-
+                    changePriceCell.style.color = changeProcent >= 0 ? "green" : "red"; // Цвет процентов              
 
                     //Изменение стоимости 
                     const currentSum = currentPrice * amountCrypto; //Текущая стоимость крипты
@@ -210,7 +210,43 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
+// Текущие цены металлов
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll("tr[data-metals]").forEach(row => {
+        const symbol = row.getAttribute("data-metals");
+        const currPriceCell = row.querySelector(".current-price");
+        const changeSumCell = row.querySelector(".change-sum");
+        const currentSumCell = row.querySelector(".current-sum");
 
+        if (!symbol || !currPriceCell) return;
+
+        
+        const amountMetal = parseFloat(row.cells[3].textContent.replace(",", ".").trim()); //выделяем количество для вычисления изменения суммы
+        let decimals = 2;
+
+        fetch(`/Metals/PriceMetal?nameMetal=${encodeURIComponent(symbol)}`)
+            .then(res => res.text())
+            .then(price => {
+                console.log(price);
+                const sumMetal = parseFloat(row.cells[4].textContent.replace("₽", "").replace(",", ".").trim()); // Выделяем сумму покупки и меняем запятую на точку
+
+                const currentPrice = parseFloat(price.replace(",", "."));
+                currPriceCell.textContent = parseFloat(currentPrice).toFixed(decimals) + " ₽";     //Текущая цена металла             
+
+                //Изменение стоимости 
+                const currentSum = currentPrice * amountMetal; //Текущая стоимость крипты
+                currentSumCell.textContent = currentSum.toFixed(decimals) + " ₽";
+                const changeProcent = ((currentSum - sumMetal) / sumMetal) * 100;  // Изменение в процентах
+                const changeFormatSum = (currentSum - sumMetal).toFixed(2) + " ₽" + " (" + changeProcent.toFixed(2) + " %)";
+                changeSumCell.textContent = changeFormatSum;
+                changeSumCell.style.color = changeProcent >= 0 ? "green" : "red";   // Цвет изменения суммы
+            })
+            .catch(() => {
+                currPriceCell.textContent = "ошибка";              
+            })
+
+    });
+});
 /*
 fetch('/Stocks/GetChartT')   // Круговая Диаграмма по тикерам
     .then(response => response.json())

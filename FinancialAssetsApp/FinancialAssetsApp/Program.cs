@@ -1,7 +1,8 @@
 using FinancialAssetsApp.Data;
 using FinancialAssetsApp.Data.Service;
-using Microsoft.EntityFrameworkCore;
 using FinancialAssetsApp.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Text;
 
 namespace FinancialAssetsApp
 {
@@ -10,7 +11,7 @@ namespace FinancialAssetsApp
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);  // Поддержка кодировок(для API металлов)
             builder.Services.AddDbContext<FinanceDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));  // Подключение к POstgres
 
             // Подключение MVC

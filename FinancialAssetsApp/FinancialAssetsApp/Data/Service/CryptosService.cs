@@ -71,13 +71,7 @@ namespace FinancialAssetsApp.Data.Service
                 _context.Cryptos.Update(item);
             }
             return crypto;
-        }
-        
-        public async Task<IEnumerable<Crypto>> GetAll()
-        { 
-            var crypto = await _context.Cryptos.ToListAsync();  // Перечисление всех данных из БД
-            return crypto;
-        }
+        }      
 
         public async Task<IEnumerable<ForChart>> GetChartTicker(int userId) //График по криптовалюте
         {
@@ -106,5 +100,12 @@ namespace FinancialAssetsApp.Data.Service
             await _context.SaveChangesAsync();
         }
 
+
+
+        public async Task<IEnumerable<Crypto>> GetAll()
+        {
+            var crypto = await _context.Cryptos.ToListAsync();  // Перечисление всех данных из БД
+            return crypto;
+        }
     }
 }

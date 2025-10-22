@@ -26,7 +26,7 @@
         <tbody>
             @foreach (var item in Model)
             {
-                <tr data-symbol="@item.Ticker">
+                <tr data-cryptos="@item.Ticker">
                     <td>@item.Ticker</td>
                     <td>@item.NameCrypto</td>
                     <td>@item.Price $</td>

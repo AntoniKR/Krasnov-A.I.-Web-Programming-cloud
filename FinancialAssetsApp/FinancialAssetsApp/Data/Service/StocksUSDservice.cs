@@ -1,7 +1,8 @@
-﻿ using FinancialAssetsApp.Models;
+﻿using FinancialAssetsApp.Models;
 using FinancialAssetsApp.Models.DTOs;
 using Microsoft.EntityFrameworkCore;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+
 
 namespace FinancialAssetsApp.Data.Service
 {
@@ -20,25 +21,24 @@ namespace FinancialAssetsApp.Data.Service
             decimal rate = await _assetdata.GetCurrencyRate("USD");   // Для расчета акций в рублях
             var temp = stock.Ticker.ToUpper();  //Перевод в верхний регистр
             stock.Ticker = temp;
-            stock.SumStocks = stock.Price * stock.AmountStock;
+            stock.SumStocks = Math.Round((stock.Price * stock.AmountStock),2);
+            stock.SumStocksToRuble = Math.Round((stock.SumStocks * rate), 2);
 
-            var existStock = await _context.StocksUSD.FirstOrDefaultAsync(stck => stck.UserId == stock.UserId && stck.Ticker == stock.Ticker); //поиск существующего
+            var existStock = await _context.StocksUSD.FirstOrDefaultAsync(stck => stck.UserId == stock.UserId && stck.Ticker == stock.Ticker); //поиск существующего          
 
-            stock.SumStocks = stock.Price * stock.AmountStock;
-
-            if (existStock != null) // если такой металл есть, то усредняем, иначе добавляем новый
-            {
+            if (existStock != null) // если такая акция есть, то усредняем, иначе добавляем новый
+            {                   
                 var totalAmount = existStock.AmountStock + stock.AmountStock;
-                existStock.Price = (existStock.SumStocks + stock.SumStocks) / totalAmount;
+                existStock.Price = Math.Round(((existStock.SumStocks + stock.SumStocks) / totalAmount), 2);
                 existStock.AmountStock = totalAmount;
-                existStock.SumStocks = existStock.Price * existStock.AmountStock;
-                existStock.SumStocksToRuble = existStock.SumStocks * rate;
+                existStock.SumStocks = Math.Round((existStock.Price * existStock.AmountStock), 2);
+                existStock.SumStocksToRuble = Math.Round((existStock.SumStocks * rate), 2);
                 existStock.DateAddStock = DateTime.UtcNow;
 
-                _context.StocksUSD.Update(existStock);
+                _context.StocksUSD.Update(existStock);  //Обновляем строку в БД
             }
             else
-            {
+            {   //Иначе добавляем новую акцию
                 await _context.StocksUSD.AddAsync(stock);
             }
             await _context.SaveChangesAsync();  // Асинхронно сохраняем изменения в БД
@@ -62,12 +62,6 @@ namespace FinancialAssetsApp.Data.Service
                 .Where(s => s.UserId == userId)
                 .ToListAsync();
 
-            decimal rate = await _assetdata.GetCurrencyRate("USD"); ;   // Курс доллара           
-            foreach (var item in stocks)    // Обновляем стоимость акций в рублях
-            {
-                item.SumStocksToRuble = item.SumStocks * rate;
-                _context.StocksUSD.Update(item);
-            }
             return stocks;
         }
         
@@ -85,7 +79,7 @@ namespace FinancialAssetsApp.Data.Service
                 .Select(g => new ForChart
                 {
                     Label = g.Key,
-                    Total = g.Sum(e => e.SumStocksToRuble) ?? 0m
+                    Total = g.Sum(e => e.SumStocksToRuble)
                 })
                 .ToListAsync();
             return data;

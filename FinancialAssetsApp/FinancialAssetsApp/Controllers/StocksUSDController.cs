@@ -37,7 +37,7 @@ namespace FinancialAssetsApp.Controllers
         {
             stock.UserId = CurrentUserId;  //Привязка к текущему пользователю
 
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid)    // если модель неверна, то загружаем ту же страницу 
             {
                 return View("CreateStock", stock);
             }

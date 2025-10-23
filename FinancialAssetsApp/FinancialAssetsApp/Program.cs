@@ -24,6 +24,7 @@ namespace FinancialAssetsApp
             builder.Services.AddScoped<ICryptosService, CryptosService>();
             builder.Services.AddScoped<HomeService>();
             builder.Services.AddScoped<IMetalsService, MetalsService>();
+            builder.Services.AddScoped<ICurrenciesService, CurrenciesService>();
 
 
             builder.Services.AddDistributedMemoryCache();

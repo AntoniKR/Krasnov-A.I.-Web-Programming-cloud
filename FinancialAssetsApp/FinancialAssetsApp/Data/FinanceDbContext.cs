@@ -13,6 +13,7 @@ namespace FinancialAssetsApp.Data
         public DbSet<Crypto> Cryptos { get; set; } // БД, хранящая крипту
         public DbSet<Metal> Metals { get; set; } // БД, хранящая металлы
         public DbSet<StockUSD> StocksUSD { get; set; } // БД, хранящая акции USD
+        public DbSet<Currency> Currencies { get; set; } // БД, хранящая валюты
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

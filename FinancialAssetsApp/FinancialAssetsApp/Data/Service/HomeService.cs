@@ -21,7 +21,7 @@ namespace FinancialAssetsApp.Data.Service
                 .SumAsync(e => e.SumStocks) ?? 0;
             var totalStocksUSD = await _context.StocksUSD
                 .Where(s => s.UserId == userId)
-                .SumAsync(e => e.SumStocksToRuble) ?? 0;
+                .SumAsync(e => e.SumStocksToRuble);
             var totalCrypto = await _context.Cryptos
                 .Where(s => s.UserId == userId)
                 .SumAsync(e => e.SumCryptoToRuble);

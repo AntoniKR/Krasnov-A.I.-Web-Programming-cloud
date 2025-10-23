@@ -13,7 +13,6 @@ function createChart(canvasId, config) {
     charts[canvasId] = new Chart(ctx, config);
 }
 
-
 // Функция для безопасного fetch + json
 async function fetchJson(url) {
     try {
@@ -35,10 +34,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 });
-
-
-
-
 
 // Круговая диаграмма по тикерам RUB
 fetchJson('/Stocks/GetChartT').then(data => {
@@ -67,12 +62,6 @@ fetchJson('/StocksUSD/GetChartT').then(data => {
 });
 
 // Курс USD
-/*fetchJson('/Home/GetRateContr').then(rate => {
-    if (rate != null) {
-        const el = document.getElementById("RateUSD");
-        if (el) el.innerHTML = rate.toFixed(2) + " ₽";
-    }
-});*/
 async function getUsdRate() {
     try {
         const rate = await fetchJson('/Home/GetRateContr');
@@ -86,6 +75,7 @@ async function getUsdRate() {
         return null;
     }
 }
+
 // Круговая диаграмма с общей суммой активов
 fetchJson('/Home/GetAssetsChart').then(data => {
     if (!data) return;
@@ -167,6 +157,67 @@ document.addEventListener("DOMContentLoaded", async () => {
         const tickers = json.result.list.map(x => x.symbol);
         $(tickerInput).autocomplete({ source: tickers, minLength: 1 });
     }
+});
+
+// Всплюывающий список валюты
+document.addEventListener("DOMContentLoaded", async () => {
+    const nameCurrency = document.getElementById("NameInputCurrency");
+    if (!nameCurrency) return;
+
+    try {
+        const json = await fetchJson("https://www.cbr-xml-daily.ru/daily_json.js");
+        const valutes = json.Valute;
+
+        const names = Object.values(valutes).map(v => v.Name);
+
+        $(nameCurrency).autocomplete({
+            source: names,
+            minLength: 1
+        });
+    } catch (error) {
+        console.error("Ошшшшибка", error);
+    }
+});
+
+//Текущая стоимость акций в рублях
+document.addEventListener("DOMContentLoaded", async () => {
+
+    const rateUSD = await getUsdRate(); //Для курса доллара и текущей стоимости акций
+    const chartDataCurrent = [];    //Для построения диаграммы
+    const rows = document.querySelectorAll("tr[data-stocksUSD]");  //для графика
+    let count = 0;  //Счетчик для построения графика
+
+    rows.forEach(row => {
+        const tickerStock = row.getAttribute("data-stocksUSD");
+        const changeSumRUBCell = row.querySelector(".change-sumRUB");   // Переменные для 
+        const currentSumRUBCell = row.querySelector(".current-sumRUB"); // подсчета изменения в портфеле
+
+        if (!changeSumRUBCell || !currentSumRUBCell) return;
+        const sumStockUSD = parseFloat(row.cells[4].textContent.replace("$", "").replace(",", ".").trim()); // Выделяем стоимость покупки акции
+        const sumStockRUB = parseFloat(row.cells[5].textContent.replace("₽", "").replace(",", ".").trim()); //выделяем количество для вычисления изменения суммы
+        
+        const currentSumRUB = sumStockUSD * rateUSD; //Текущая стоимость в рублях
+        currentSumRUBCell.textContent = currentSumRUB.toFixed(2) + " ₽";
+
+        const changeProcentSumRUB = ((currentSumRUB - sumStockRUB) / sumStockRUB) * 100;  // Изменение в процентах
+        const changeFormatSumRUB = (currentSumRUB - sumStockRUB).toFixed(2) + " ₽" + " (" + changeProcentSumRUB.toFixed(2) + " %)";
+        changeSumRUBCell.textContent = changeFormatSumRUB;
+        changeSumRUBCell.style.color = changeProcentSumRUB >= 0 ? "green" : "red";   // Цвет изменения суммы      
+
+        chartDataCurrent.push({ label: tickerStock, value: currentSumRUB });    // Добавляем данные для диаграммы
+
+        count++;
+        if (count === rows.length) {    // если все акции пройдены, то строим график
+            createChart('CurrentStocksUSDPie', {
+                type: 'pie',
+                data: {
+                    labels: chartDataCurrent.map(d => d.label),
+                    datasets: [{ data: chartDataCurrent.map(d => d.value) }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+    });
 });
 
 // Текущие цены крипты

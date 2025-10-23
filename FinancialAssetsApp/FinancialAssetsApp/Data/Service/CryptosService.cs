@@ -62,14 +62,7 @@ namespace FinancialAssetsApp.Data.Service
         {
             var crypto = await _context.Cryptos
                 .Where(s => s.UserId == userId)
-                .ToListAsync(); // Получение таблицы с криптой пользователя
-
-            /*decimal rate = await _assetdata.GetCurrencyRate("USD"); ;   // Курс доллара           
-            foreach (var item in crypto)    // Обновляем стоимость крипты в рублях
-            {
-                item.SumCryptoToRuble = item.SumCrypto * rate;
-                _context.Cryptos.Update(item);
-            }*/
+                .ToListAsync(); // Получение таблицы с криптой пользователя           
             return crypto;
         }      
 

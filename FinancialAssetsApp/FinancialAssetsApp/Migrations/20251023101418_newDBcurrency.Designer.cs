@@ -3,6 +3,7 @@ using System;
 using FinancialAssetsApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FinancialAssetsApp.Migrations
 {
     [DbContext(typeof(FinanceDbContext))]
-    partial class FinanceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251023101418_newDBcurrency")]
+    partial class newDBcurrency
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -61,44 +64,6 @@ namespace FinancialAssetsApp.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Cryptos");
-                });
-
-            modelBuilder.Entity("FinancialAssetsApp.Models.Currency", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("AmountCurrency")
-                        .HasColumnType("numeric");
-
-                    b.Property<string>("CharCode")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("DateAddStock")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("NameCurrency")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal>("SumCurrencyToRuble")
-                        .HasColumnType("numeric");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Currencies");
                 });
 
             modelBuilder.Entity("FinancialAssetsApp.Models.Metal", b =>
@@ -239,17 +204,6 @@ namespace FinancialAssetsApp.Migrations
                 {
                     b.HasOne("FinancialAssetsApp.Models.User", "User")
                         .WithMany("Cryptos")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("FinancialAssetsApp.Models.Currency", b =>
-                {
-                    b.HasOne("FinancialAssetsApp.Models.User", "User")
-                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

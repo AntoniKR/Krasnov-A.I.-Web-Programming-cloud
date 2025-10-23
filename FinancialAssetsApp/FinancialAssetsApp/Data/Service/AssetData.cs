@@ -27,6 +27,22 @@ namespace FinancialAssetsApp.Data.Service
 
             throw new Exception($"Валюта {code} не найдена");
         }
+        public async Task<string> GetCurrencyCode(string nameCurrency)   //Получение кода для валюты
+        {
+            var dataAsset = await _httpClient.GetStringAsync("https://www.cbr-xml-daily.ru/daily_json.js");
+            var doc = JsonDocument.Parse(dataAsset);
+            var currency = doc.RootElement.GetProperty("Valute");
+
+            foreach(var item in currency.EnumerateObject())
+            {
+                var charCode = item.Value;
+                if(charCode.GetProperty("Name").GetString() == nameCurrency)
+                    return charCode.GetProperty("CharCode").GetString();
+
+            }
+            throw new Exception($"Код валюты {nameCurrency} не найден");
+
+        }
         public async Task<List<string>> GetTickersCrypto(string symbol)   //Получение списка крипта с Bybit
         {
             var urlTickers = "https://api.bybit.com/v5/market/tickers?category=spot";

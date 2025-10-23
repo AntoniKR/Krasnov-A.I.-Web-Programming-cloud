@@ -14,13 +14,13 @@ namespace FinancialAssetsApp.Models
 
         [Required(ErrorMessage = "Введите цену больше 0,01")]
         [Range(0.01, double.MaxValue, ErrorMessage = "Цена меньше 0!")] //Ограничение на ввод
-        public decimal? Price { get; set; }           // Цена акции
+        public decimal Price { get; set; }           // Цена акции
 
         [Required(ErrorMessage = "Введите количество акции")]
         [Range(1, int.MaxValue, ErrorMessage = "Количество акций должно быть больше 0")] //Ограничение на ввод
-        public int? AmountStock { get; set; }        // Количество акций
-        public decimal? SumStocks { get; set; }        // Стоимость акций
-        public decimal? SumStocksToRuble { get; set; }        // Стоимость акций в рублях
+        public int AmountStock { get; set; }        // Количество акций
+        public decimal SumStocks { get; set; }        // Стоимость акций
+        public decimal SumStocksToRuble { get; set; }        // Стоимость акций в рублях
 
         public DateTime DateAddStock { get; set; } = DateTime.UtcNow;    // Время обновления
 

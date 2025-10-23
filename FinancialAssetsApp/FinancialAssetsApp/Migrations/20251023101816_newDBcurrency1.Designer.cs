@@ -3,6 +3,7 @@ using System;
 using FinancialAssetsApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FinancialAssetsApp.Migrations
 {
     [DbContext(typeof(FinanceDbContext))]
-    partial class FinanceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251023101816_newDBcurrency1")]
+    partial class newDBcurrency1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -86,6 +89,9 @@ namespace FinancialAssetsApp.Migrations
                         .HasColumnType("text");
 
                     b.Property<decimal>("Price")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("SumCurrency")
                         .HasColumnType("numeric");
 
                     b.Property<decimal>("SumCurrencyToRuble")

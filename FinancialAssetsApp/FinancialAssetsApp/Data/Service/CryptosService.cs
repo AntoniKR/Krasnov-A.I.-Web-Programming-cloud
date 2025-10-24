@@ -26,10 +26,12 @@ namespace FinancialAssetsApp.Data.Service
             crypto.SumCrypto = crypto.Price * crypto.AmountCrypto;
             crypto.SumCryptoToRuble = crypto.SumCrypto * rate;
 
+
+
             if (oldTicker != null)   // если уже есть такой тикер в БД, то цену ставим среднюю
             {
-                var totalAmount = oldTicker.AmountCrypto + crypto.AmountCrypto;
-                oldTicker.Price = (oldTicker.SumCrypto + crypto.SumCrypto) / totalAmount;
+                var totalAmount = Math.Round((oldTicker.AmountCrypto + crypto.AmountCrypto), 2); //Всего крипты
+                oldTicker.Price = Math.Round(((oldTicker.SumCryptoToRuble + crypto.SumCryptoToRuble) / totalAmount), 2);    //Средняя цена покупки
                 oldTicker.AmountCrypto = totalAmount;
                 oldTicker.SumCrypto = oldTicker.Price * oldTicker.AmountCrypto;
                 oldTicker.SumCryptoToRuble = oldTicker.SumCrypto * rate;

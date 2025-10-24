@@ -24,7 +24,7 @@ namespace FinancialAssetsApp.Controllers
       
         public async Task<IActionResult> PriceCurrency (string symbol)    //Получение текущей цены крипты
         {
-            var price = await _assetdata.GetPriceCrypto(symbol);
+            var price = await _assetdata.GetCurrencyRate(symbol);
             return Json(price);
 
         }

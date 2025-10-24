@@ -1,7 +1,8 @@
 ﻿// Функция для безопасного создания Chart
 const charts = {}; // глобальный объект для хранения графиков
 
-function createChart(canvasId, config) {
+//Создание диаграмм
+function createChart(canvasId, config) {    
     const ctx = document.getElementById(canvasId);
     if (!ctx) return;
 
@@ -11,9 +12,8 @@ function createChart(canvasId, config) {
     }
 
     charts[canvasId] = new Chart(ctx, config);
-}
-
-// Функция для безопасного fetch + json
+}   //
+// Функция для безопасного fetch + json     // Общие функции
 async function fetchJson(url) {
     try {
         const res = await fetch(url);
@@ -24,16 +24,15 @@ async function fetchJson(url) {
         console.error(`Ошибка при fetch ${url}:`, err);
         return null;
     }
-}
-
-//Изменение точки на запятую
+}            //
+//Изменение точки на запятую                //
 document.addEventListener("DOMContentLoaded", () => {   
     document.querySelectorAll('input[name="Price"], input[name="AmountCrypto"]').forEach(input => {
         input.addEventListener("input", () => {
             input.value = input.value.replace(".", ",");
         });
     });
-});
+});               //
 
 // Круговая диаграмма по тикерам RUB
 fetchJson('/Stocks/GetChartT').then(data => {
@@ -47,34 +46,6 @@ fetchJson('/Stocks/GetChartT').then(data => {
         options: { responsive: false, maintainAspectRatio: false }
     });
 });
-
-// Круговая диаграмма по тикерам иностранных компаний
-fetchJson('/StocksUSD/GetChartT').then(data => {
-    if (!data) return;
-    createChart('TickerPieUSD', {
-        type: 'pie',
-        data: {
-            labels: data.map(d => d.label),
-            datasets: [{ data: data.map(d => d.total) }]
-        },
-        options: { responsive: false, maintainAspectRatio: false }
-    });
-});
-
-// Курс USD
-async function getUsdRate() {
-    try {
-        const rate = await fetchJson('/Home/GetRateContr');
-        if (rate != null) {
-            const el = document.getElementById("RateUSD");
-            if (el) el.innerHTML = rate.toFixed(2) + " ₽";
-            return rate;
-        }
-    } catch (err) {
-        console.error("Ошибка получения курса доллара:", err);
-        return null;
-    }
-}
 
 // Круговая диаграмма с общей суммой активов
 fetchJson('/Home/GetAssetsChart').then(data => {
@@ -121,45 +92,22 @@ fetchJson('/Home/GetAssetsChart').then(data => {
     });
 });
 
-// Круговая диаграмма Крипта
-fetchJson('/Crypto/GetChartTicker').then(data => {
-    if (!data) return;
-    createChart('CryptoPie', {
-        type: 'pie',
-        data: {
-            labels: data.map(d => d.label),
-            datasets: [{ data: data.map(d => d.total) }]
-        },
-        options: { responsive: false, maintainAspectRatio: false }
-    });
-});
 
-// Круговая диаграмма покупки Металлы
-fetchJson('/Metals/GetChartT').then(data => {
-    if (!data) return;
-    createChart('PurchasePie', {
-        type: 'pie',
-        data: {
-            labels: data.map(d => d.label),
-            datasets: [{ data: data.map(d => d.total) }]
-        },
-        options: { responsive: false, maintainAspectRatio: false }
-    });
-});
-
-// Список тикеров для крипты
-document.addEventListener("DOMContentLoaded", async () => {
-    const tickerInput = document.getElementById("TickerInput");
-    if (!tickerInput) return;
-
-    const json = await fetchJson("https://api.bybit.com/v5/market/tickers?category=spot");
-    if (json && json.retCode === 0 && json.result?.list) {
-        const tickers = json.result.list.map(x => x.symbol);
-        $(tickerInput).autocomplete({ source: tickers, minLength: 1 });
+// Курс USD
+async function getUsdRate() {
+    try {
+        const rate = await fetchJson('/Home/GetRateContr');
+        if (rate != null) {
+            const el = document.getElementById("RateUSD");
+            if (el) el.innerHTML = rate.toFixed(2) + " ₽";
+            return rate;
+        }
+    } catch (err) {
+        console.error("Ошибка получения курса доллара:", err);
+        return null;
     }
-});
-
-// Всплюывающий список валюты
+}               //
+// Всплюывающий список валюты                // Валюта
 document.addEventListener("DOMContentLoaded", async () => {
     const nameCurrency = document.getElementById("NameInputCurrency");
     if (!nameCurrency) return;
@@ -177,9 +125,94 @@ document.addEventListener("DOMContentLoaded", async () => {
     } catch (error) {
         console.error("Ошшшшибка", error);
     }
-});
+});                //
+// Текущие цены и диаграмма Валюта           //
+document.addEventListener("DOMContentLoaded", () => {
 
-//Текущая стоимость акций в рублях
+    const chartDataCurrent = [];    //Для построения диаграммы
+    const rows = document.querySelectorAll("tr[data-currency]");  //для графика
+    let count = 0;  //Счетчик для построения графика
+    document.querySelectorAll("tr[data-currency]").forEach(row => {
+
+        const symbol = row.getAttribute("data-currency");             //этот блок объявляет переменные
+        const currPriceCell = row.querySelector(".current-price");  //для подсчета изменений
+        const changePriceCell = row.querySelector(".change-price");     //в портфеле
+        const changeSumRUBCell = row.querySelector(".change-sumRUB");
+        const currentSumRUBCell = row.querySelector(".current-sumRUB");
+        if (!symbol || !currPriceCell) return;
+
+
+        const amountCurrency = parseFloat(row.cells[5].textContent.replace(",", ".").trim()); //выделяем количество для вычисления изменения суммы
+        const purchaseCurrency = parseFloat(row.cells[2].textContent.replace(",", ".").trim()); //Цена покупки валюты
+        const sumPurchase = parseFloat(row.cells[6].textContent.replace(",", ".").trim()); //Сумма покупки валюты
+        let decimals = 2;   // Для разрядности чисел
+        fetch(`/Currency/PriceCurrency?symbol=${encodeURIComponent(symbol)}`)
+            .then(res => res.text())    // Берем текущую цену определенной валюты
+            .then(price => {               
+                const currentPrice = parseFloat(price);
+                currPriceCell.textContent = parseFloat(currentPrice).toFixed(decimals) + " ₽"; //Текущая цена валюты                
+                const changeProcent = ((currentPrice - purchaseCurrency) / purchaseCurrency) * 100;  // Изменение в процентах
+                const changeFormatPrice = (currentPrice - purchaseCurrency).toFixed(2) + " ₽" + " (" + changeProcent.toFixed(2) + " %)";
+                //Изменение цены
+                changePriceCell.textContent = changeFormatPrice;
+                changePriceCell.style.color = changeProcent >= 0 ? "green" : "red";   // Цвет изменения суммы
+
+                const currentSum = currentPrice * amountCurrency; //Текущая стоимость валюты
+                currentSumRUBCell.textContent = currentSum.toFixed(decimals) + " ₽";
+                
+                const changeFormatSum = (currentSum - sumPurchase).toFixed(2) + " ₽" + " (" + changeProcent.toFixed(2) + " %)";
+                //Изменение цены
+
+                changeSumRUBCell.textContent = changeFormatSum;
+                changeSumRUBCell.style.color = changeProcent >= 0 ? "green" : "red";   // Цвет изменения суммы
+
+                chartDataCurrent.push({ label: symbol, value: currentSum });
+            })
+            .catch(() => {  //Ловим ошибку
+                currPriceCell.textContent = "ошибка";
+            })
+            .finally(() => {    //Когда обработали строку, проверяем, можно ли строить диаграмму
+                count++;
+                if (count === rows.length) {
+                    createChart('CurrentCurrencyPie', {
+                        type: 'pie',
+                        data: {
+                            labels: chartDataCurrent.map(d => d.label),
+                            datasets: [{ data: chartDataCurrent.map(d => d.value) }]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false }
+                    });
+                }
+            });
+    });
+
+});
+// Круговая диаграмма Валюта
+fetchJson('/Currency/GetChartTicker').then(data => {
+    if (!data) return;
+    createChart('CurrencyPie', {
+        type: 'pie',
+        data: {
+            labels: data.map(d => d.label),
+            datasets: [{ data: data.map(d => d.total) }]
+        },
+        options: { responsive: false, maintainAspectRatio: false }
+    });
+});    //
+
+// Круговая диаграмма по тикерам иностранных компаний
+fetchJson('/StocksUSD/GetChartT').then(data => {
+    if (!data) return;
+    createChart('TickerPieUSD', {
+        type: 'pie',
+        data: {
+            labels: data.map(d => d.label),
+            datasets: [{ data: data.map(d => d.total) }]
+        },
+        options: { responsive: false, maintainAspectRatio: false }
+    });
+});     //
+//Текущая стоимость акций в рублях              // Иностранные акции
 document.addEventListener("DOMContentLoaded", async () => {
 
     const rateUSD = await getUsdRate(); //Для курса доллара и текущей стоимости акций
@@ -195,7 +228,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (!changeSumRUBCell || !currentSumRUBCell) return;
         const sumStockUSD = parseFloat(row.cells[4].textContent.replace("$", "").replace(",", ".").trim()); // Выделяем стоимость покупки акции
         const sumStockRUB = parseFloat(row.cells[5].textContent.replace("₽", "").replace(",", ".").trim()); //выделяем количество для вычисления изменения суммы
-        
+
         const currentSumRUB = sumStockUSD * rateUSD; //Текущая стоимость в рублях
         currentSumRUBCell.textContent = currentSumRUB.toFixed(2) + " ₽";
 
@@ -218,9 +251,33 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
         }
     });
-});
+});                  //
 
-// Текущие цены крипты
+
+// Круговая диаграмма Крипта
+fetchJson('/Crypto/GetChartTicker').then(data => {
+    if (!data) return;
+    createChart('CryptoPie', {
+        type: 'pie',
+        data: {
+            labels: data.map(d => d.label),
+            datasets: [{ data: data.map(d => d.total) }]
+        },
+        options: { responsive: false, maintainAspectRatio: false }
+    });
+});    //
+// Список тикеров для крипты                    //
+document.addEventListener("DOMContentLoaded", async () => {
+    const tickerInput = document.getElementById("TickerInput");
+    if (!tickerInput) return;
+
+    const json = await fetchJson("https://api.bybit.com/v5/market/tickers?category=spot");
+    if (json && json.retCode === 0 && json.result?.list) {
+        const tickers = json.result.list.map(x => x.symbol);
+        $(tickerInput).autocomplete({ source: tickers, minLength: 1 });
+    }
+});                   // Криптовалюта
+// Текущие цены крипты                          //
 document.addEventListener("DOMContentLoaded", async () => {
 
     const rateUSD = await getUsdRate(); //Для курса доллара и текущей стоимости крипты
@@ -320,9 +377,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             });  
                 
     });
-});
+});                  //
 
-// Текущие цены и диаграмма Металлы
+
+// Текущие цены и диаграмма Металлы            //
 document.addEventListener("DOMContentLoaded", () => {
 
     const chartDataCurrent = [];    //Для построения диаграммы
@@ -342,7 +400,7 @@ document.addEventListener("DOMContentLoaded", () => {
         let decimals = 2;   // Для разрядности чисел
 
         fetch(`/Metals/PriceMetal?nameMetal=${encodeURIComponent(symbol)}`)
-            .then(res => res.text())
+            .then(res => res.text())    // Берем текущую цену определенного металла
             .then(price => {
                 //console.log(price);
                 const sumMetal = parseFloat(row.cells[4].textContent.replace("₽", "").replace(",", ".").trim()); // Выделяем сумму покупки и меняем запятую на точку
@@ -378,4 +436,16 @@ document.addEventListener("DOMContentLoaded", () => {
             });    
     });
 
-});
+});                 // Металлы 
+// Круговая диаграмма покупки Металлы         //
+fetchJson('/Metals/GetChartT').then(data => {
+    if (!data) return;
+    createChart('PurchasePie', {
+        type: 'pie',
+        data: {
+            labels: data.map(d => d.label),
+            datasets: [{ data: data.map(d => d.total) }]
+        },
+        options: { responsive: false, maintainAspectRatio: false }
+    });
+});      //

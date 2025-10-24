@@ -20,8 +20,6 @@ namespace FinancialAssetsApp.Data.Service
         {          
             currency.CharCode = await _assetdata.GetCurrencyCode(currency.NameCurrency);    //получаем код валюты для вычислений
 
-            //decimal rate = await _assetdata.GetCurrencyRate(currency.CharCode); ;   // Курс валюты
-
             var oldCurrency = await _context.Currencies.FirstOrDefaultAsync
                 (c => c.UserId == currency.UserId && c.CharCode == currency.CharCode);  //Ищем такую же валюту в портфеле, если имеется
 
@@ -67,7 +65,7 @@ namespace FinancialAssetsApp.Data.Service
             return currency;
         }      
 
-        public async Task<IEnumerable<ForChart>> GetChartTicker(int userId) //График по криптовалюте
+        public async Task<IEnumerable<ForChart>> GetChartTicker(int userId) //График по валюте
         {
             var data = await _context.Currencies
                 .Where(s => s.UserId == userId)

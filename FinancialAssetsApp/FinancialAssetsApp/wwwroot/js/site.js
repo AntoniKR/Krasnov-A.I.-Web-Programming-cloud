@@ -186,8 +186,8 @@ document.addEventListener("DOMContentLoaded", () => {
             });
     });
 
-});
-// Круговая диаграмма Валюта
+});                 //
+// Круговая диаграмма Валюта                //
 fetchJson('/Currency/GetChartTicker').then(data => {
     if (!data) return;
     createChart('CurrencyPie', {

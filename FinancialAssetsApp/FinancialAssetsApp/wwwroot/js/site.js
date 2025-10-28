@@ -134,11 +134,12 @@ document.addEventListener("DOMContentLoaded", () => {
     let count = 0;  //Счетчик для построения графика
     document.querySelectorAll("tr[data-currency]").forEach(row => {
 
-        const symbol = row.getAttribute("data-currency");             //этот блок объявляет переменные
+        const symbol = row.getAttribute("data-currency");    //этот блок объявляет переменные
         const currPriceCell = row.querySelector(".current-price");  //для подсчета изменений
         const changePriceCell = row.querySelector(".change-price");     //в портфеле
         const changeSumRUBCell = row.querySelector(".change-sumRUB");
         const currentSumRUBCell = row.querySelector(".current-sumRUB");
+        const nameCurrency = row.querySelector(".nameCurrency");
         if (!symbol || !currPriceCell) return;
 
 
@@ -148,7 +149,8 @@ document.addEventListener("DOMContentLoaded", () => {
         let decimals = 2;   // Для разрядности чисел
         fetch(`/Currency/PriceCurrency?symbol=${encodeURIComponent(symbol)}`)
             .then(res => res.text())    // Берем текущую цену определенной валюты
-            .then(price => {               
+            .then(price => {
+                
                 const currentPrice = parseFloat(price);
                 currPriceCell.textContent = parseFloat(currentPrice).toFixed(decimals) + " ₽"; //Текущая цена валюты                
                 const changeProcent = ((currentPrice - purchaseCurrency) / purchaseCurrency) * 100;  // Изменение в процентах
@@ -166,7 +168,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 changeSumRUBCell.textContent = changeFormatSum;
                 changeSumRUBCell.style.color = changeProcent >= 0 ? "green" : "red";   // Цвет изменения суммы
 
-                chartDataCurrent.push({ label: symbol, value: currentSum });
+                chartDataCurrent.push({ label: nameCurrency.textContent, value: currentSum });
             })
             .catch(() => {  //Ловим ошибку
                 currPriceCell.textContent = "ошибка";

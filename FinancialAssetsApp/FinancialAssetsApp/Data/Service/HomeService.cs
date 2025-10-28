@@ -28,12 +28,16 @@ namespace FinancialAssetsApp.Data.Service
             var totalMetals = await _context.Metals
                 .Where(s => s.UserId == userId)
                 .SumAsync(e => e.SumMetals) ?? 0;
+            var totalCurrencies = await _context.Currencies
+                .Where(s => s.UserId == userId)
+                .SumAsync(e => e.SumCurrencyToRuble);
             return new List<ForChart>
             {
                 new ForChart{Label = "Акции ₽", Total = totalStocks},
                 new ForChart{Label = "Акции $", Total = totalStocksUSD},
                 new ForChart{Label = "Криптовалюта", Total = totalCrypto},
                 new ForChart{Label = "Металлы", Total = totalMetals},
+                new ForChart{Label = "Валюта", Total = totalCurrencies},
             };
         }
         public async Task<decimal> GetRate()

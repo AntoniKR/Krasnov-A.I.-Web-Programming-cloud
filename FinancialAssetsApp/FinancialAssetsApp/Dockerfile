@@ -4,6 +4,8 @@ WORKDIR /src
 
 # Копируем всё и собираем проект
 COPY . .
+RUN dotnet restore
+
 RUN dotnet publish FinancialAssetsApp.csproj -c Release -o /app/out
 
 # --- Этап выполнения ---

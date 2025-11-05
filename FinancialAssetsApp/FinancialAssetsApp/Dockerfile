@@ -1,10 +1,12 @@
 # --- Этап сборки ---
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /app
+WORKDIR /src
 
 # Копируем всё и собираем проект
 COPY . .
-RUN dotnet publish ./FinancialAssetsApp/FinancialAssetsApp.csproj -c Release -o /app/out
+WORKDIR /src/FinancialAssetsApp/FinancialAssetsApp
+
+RUN dotnet publish -c Release -o /app/out
 
 # --- Этап выполнения ---
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime

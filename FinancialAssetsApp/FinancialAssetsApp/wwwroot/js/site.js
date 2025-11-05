@@ -139,7 +139,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const changePriceCell = row.querySelector(".change-price");     //в портфеле
         const changeSumRUBCell = row.querySelector(".change-sumRUB");
         const currentSumRUBCell = row.querySelector(".current-sumRUB");
-        const nameCurrency = row.querySelector(".nameCurrency");
+        const nameCurrency = row.querySelector(".nameCurrency");    // для диаграммы текущей цены валюты
         if (!symbol || !currPriceCell) return;
 
 

@@ -22,18 +22,18 @@ namespace FinancialAssetsApp.Controllers
             _assetdata = assetdata;
         }
       
-        public async Task<IActionResult> PriceCurrency (string symbol)    //Получение текущей цены крипты
+        public async Task<IActionResult> PriceCurrency (string symbol)    //Получение текущей цены валюты
         {
             var price = await _assetdata.GetCurrencyRate(symbol);
             return Json(price);
 
         }
 
-        public async Task<IActionResult> IndexCurrency()    // Список всей крипты
+        public async Task<IActionResult> IndexCurrency()    // Список всей валюты
         {          
-            var currencies = await _currenciesService.GetAssetsByID(CurrentUserId);
+            var currencies = await _currenciesService.GetAssetsByID(CurrentUserId);           
+            return View("IndexCurrency", currencies);
             //await FixCrypto();    // Для правок в БД
-            return View(currencies);
         }
         public IActionResult CreateCurrency()
         {

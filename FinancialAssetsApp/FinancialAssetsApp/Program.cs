@@ -17,10 +17,10 @@ namespace FinancialAssetsApp
             // Подключение MVC
             builder.Services.AddControllersWithViews();
 
+            builder.Services.AddHttpClient<IAssetData, AssetData>();
             builder.Services.AddScoped<IStocksService, StocksService>();
             builder.Services.AddScoped<IStocksUSDService, StocksUSDservice>();
-            builder.Services.AddScoped<IAuthService, AuthService>();
-            builder.Services.AddHttpClient<IAssetData, AssetData>();
+            builder.Services.AddScoped<IAuthService, AuthService>();            
             builder.Services.AddScoped<ICryptosService, CryptosService>();
             builder.Services.AddScoped<HomeService>();
             builder.Services.AddScoped<IMetalsService, MetalsService>();

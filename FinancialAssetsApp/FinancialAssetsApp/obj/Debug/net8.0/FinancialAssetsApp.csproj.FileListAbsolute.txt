@@ -338,7 +338,6 @@ C:\Users\ant.krasnov\Desktop\study\3 семестр\Web Cloud\Krasnov-A.I.-Web-P
 C:\Users\ant.krasnov\Desktop\study\3 семестр\Web Cloud\Krasnov-A.I.-Web-Programming-cloud\FinancialAssetsApp\FinancialAssetsApp\obj\Debug\net8.0\staticwebassets.build.json.cache
 C:\Users\ant.krasnov\Desktop\study\3 семестр\Web Cloud\Krasnov-A.I.-Web-Programming-cloud\FinancialAssetsApp\FinancialAssetsApp\obj\Debug\net8.0\staticwebassets.development.json
 C:\Users\ant.krasnov\Desktop\study\3 семестр\Web Cloud\Krasnov-A.I.-Web-Programming-cloud\FinancialAssetsApp\FinancialAssetsApp\obj\Debug\net8.0\staticwebassets.build.endpoints.json
-C:\Users\ant.krasnov\Desktop\study\3 семестр\Web Cloud\Krasnov-A.I.-Web-Programming-cloud\FinancialAssetsApp\FinancialAssetsApp\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\ant.krasnov\Desktop\study\3 семестр\Web Cloud\Krasnov-A.I.-Web-Programming-cloud\FinancialAssetsApp\FinancialAssetsApp\obj\Debug\net8.0\Financia.80DED9D4.Up2Date
 C:\Users\ant.krasnov\Desktop\study\3 семестр\Web Cloud\Krasnov-A.I.-Web-Programming-cloud\FinancialAssetsApp\FinancialAssetsApp\obj\Debug\net8.0\FinancialAssetsApp.dll
 C:\Users\ant.krasnov\Desktop\study\3 семестр\Web Cloud\Krasnov-A.I.-Web-Programming-cloud\FinancialAssetsApp\FinancialAssetsApp\obj\Debug\net8.0\refint\FinancialAssetsApp.dll

@@ -4,7 +4,7 @@ WORKDIR /app
 
 # Копируем всё и собираем проект
 COPY . .
-RUN dotnet publish ./FinancialAssetsApp/FinancialAssetsApp.csproj -c Release -o /app/out
+RUN dotnet publish C:\Users\ant.krasnov\Desktop\study\3 семестр\Web Cloud\Krasnov-A.I.-Web-Programming-cloud\FinancialAssetsApp\FinancialAssetsApp -c Release -o /app/out
 
 # --- Этап выполнения ---
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime

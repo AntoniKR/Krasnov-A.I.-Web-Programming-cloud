@@ -2,21 +2,18 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Копируем всё
+# Копируем всё и собираем проект
 COPY . .
+RUN dotnet publish FinancialAssetsApp.csproj -c Release -o /app/out
 
-# Покажем структуру папок
-RUN echo "=== Полная структура папок ==="
-RUN find . -type f -name "*.csproj" | head -20
+# --- Этап выполнения ---
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+WORKDIR /app
+COPY --from=build /app/out ./
 
-RUN echo "=== Содержимое корневой папки ==="
-RUN ls -la
+# Запускаем приложение
+ENTRYPOINT ["dotnet", "FinancialAssetsApp.dll"]
 
-RUN echo "=== Содержимое FinancialAssetsApp ==="
-RUN ls -la FinancialAssetsApp/
-
-RUN echo "=== Ищем все csproj файлы ==="
-RUN find . -name "*.csproj" -type f
-
-# Остановим сборку чтобы увидеть логи
-RUN exit 1
+# Render по умолчанию слушает 10000 порт
+ENV ASPNETCORE_URLS=http://+:10000
+EXPOSE 10000

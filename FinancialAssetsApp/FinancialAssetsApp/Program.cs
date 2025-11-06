@@ -50,31 +50,13 @@ namespace FinancialAssetsApp
             app.UseStaticFiles();
             app.UseSession();
 
-            app.Use(async (context, next) =>    //Автологин
-            {
-                // Если сессия ещё не установлена
-                if (!context.Session.Keys.Contains("User"))
-                {
-                    var authService = context.RequestServices.GetRequiredService<IAuthService>();
-                    string adminUsername = "admin";
-                    string adminPassword = "123";
 
-                    if (await authService.ValidateUser(adminUsername, adminPassword))
-                    {
-                        var user = await authService.GetUserByName(adminUsername);
-                        context.Session.SetString("User", user.Username);
-                        context.Session.SetInt32("UserId", user.Id);
-                    }
-                }
-
-                await next.Invoke();
-            });
 
             app.UseRouting();
             app.UseAuthorization(); // Авторизация юзера
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Account}/{action=Login}/{id?}");
             app.Run();
         }
     }

@@ -24,8 +24,12 @@ namespace FinancialAssetsApp.Models
         public decimal SumStocks { get; set; }        // Стоимость акций
         public DateTime DateAddStock { get; set; } = DateTime.UtcNow;    // Время обновления
 
-        [Required]
+        [Required]  // Привязка к определенному пользователю
         public int UserId { get; set; }
         public User? User { get; set; }
+
+        [Required]  // привязка к определенной платформе
+        public int PlatformStartupId { get; set; }
+        public PlatformStartup? PlatformStartup { get; set; }
     }
 }

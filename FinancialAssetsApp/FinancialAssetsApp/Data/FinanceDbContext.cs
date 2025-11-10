@@ -15,7 +15,7 @@ namespace FinancialAssetsApp.Data
         public DbSet<StockUSD> StocksUSD { get; set; } // БД, хранящая акции USD
         public DbSet<Currency> Currencies { get; set; } // БД, хранящая валюты
         public DbSet<Startup> Startups { get; set; } // БД, хранящая стартапы
-        public DbSet<PlatformStartup> PlatformsStartups { get; set; } // БД, хранящая платформы стартапов
+        public DbSet<PlatformStartup> PlatformStartups { get; set; } // БД, хранящая платформы стартапов
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -28,6 +28,12 @@ namespace FinancialAssetsApp.Data
             {
                 diffKey.DeleteBehavior = DeleteBehavior.Cascade;
             }
+
+            modelBuilder.Entity<Startup>()      // Каскадное удаление стартапов, если удалить платформу
+                .HasOne(s => s.PlatformStartup)
+                .WithMany(p => p.Startups)
+                .HasForeignKey(s => s.PlatformStartupId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

@@ -26,9 +26,7 @@ namespace FinancialAssetsApp.Controllers
         {
             var price = await _assetdata.GetCurrencyRate(symbol);
             return Json(price);
-
         }
-
         public async Task<IActionResult> IndexCurrency()    // Список всей валюты
         {          
             var currencies = await _currenciesService.GetAssetsByID(CurrentUserId);           

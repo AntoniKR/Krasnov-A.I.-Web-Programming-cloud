@@ -3,6 +3,7 @@ using System;
 using FinancialAssetsApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FinancialAssetsApp.Migrations
 {
     [DbContext(typeof(FinanceDbContext))]
-    partial class FinanceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251110142147_newfieldinStartups")]
+    partial class newfieldinStartups
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -163,7 +166,7 @@ namespace FinancialAssetsApp.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("PlatformStartups");
+                    b.ToTable("PlatformsStartups");
                 });
 
             modelBuilder.Entity("FinancialAssetsApp.Models.Startup", b =>
@@ -189,7 +192,10 @@ namespace FinancialAssetsApp.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("PlatformStartupId")
+                    b.Property<int>("PlatformId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("PlatformStartupId")
                         .HasColumnType("integer");
 
                     b.Property<decimal>("Price")
@@ -357,10 +363,8 @@ namespace FinancialAssetsApp.Migrations
             modelBuilder.Entity("FinancialAssetsApp.Models.Startup", b =>
                 {
                     b.HasOne("FinancialAssetsApp.Models.PlatformStartup", "PlatformStartup")
-                        .WithMany("Startups")
-                        .HasForeignKey("PlatformStartupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany()
+                        .HasForeignKey("PlatformStartupId");
 
                     b.HasOne("FinancialAssetsApp.Models.User", "User")
                         .WithMany("Startups")
@@ -393,11 +397,6 @@ namespace FinancialAssetsApp.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("FinancialAssetsApp.Models.PlatformStartup", b =>
-                {
-                    b.Navigation("Startups");
                 });
 
             modelBuilder.Entity("FinancialAssetsApp.Models.User", b =>

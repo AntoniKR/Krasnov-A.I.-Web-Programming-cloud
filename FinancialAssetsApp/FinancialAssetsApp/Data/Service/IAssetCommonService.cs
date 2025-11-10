@@ -27,7 +27,11 @@ namespace FinancialAssetsApp.Data.Service
     {
         Task<IEnumerable<ForChart>> GetChartTicker(int userId);
     }
-    public interface ICurrenciesService : IAssetCommonService<Currency>
+    public interface ICurrenciesService : IAssetCommonService<Currency>    // График по валютам
+    {
+        Task<IEnumerable<ForChart>> GetChartTicker(int userId);
+    }
+    public interface IPlatformStartupService : IAssetCommonService<PlatformStartup>
     {
         Task<IEnumerable<ForChart>> GetChartTicker(int userId);
     }

@@ -19,7 +19,7 @@ namespace FinancialAssetsApp.Data.Service
         {
             var temp = stock.Ticker.ToUpper();  //Перевод в верхний регистр
             stock.Ticker = temp;
-            stock.SumStocks = stock.Price * stock.AmountStock;
+            stock.SumStocks = Math.Round(stock.Price * stock.AmountStock, 2);
 
             var existStock = await _context.Stocks.FirstOrDefaultAsync(stck => stck.UserId == stock.UserId && stck.Ticker == stock.Ticker); //поиск существующего
 
@@ -28,7 +28,7 @@ namespace FinancialAssetsApp.Data.Service
             if (existStock != null) // если такой металл есть, то усредняем, иначе добавляем новый
             {
                 var totalAmount = existStock.AmountStock + stock.AmountStock;
-                existStock.Price = (existStock.SumStocks + stock.SumStocks) / totalAmount;
+                existStock.Price = Math.Round((existStock.SumStocks + stock.SumStocks) / totalAmount, 2);
                 existStock.AmountStock = totalAmount;
                 existStock.SumStocks = existStock.Price * existStock.AmountStock;
                 existStock.DateAddStock = DateTime.UtcNow;
@@ -76,7 +76,7 @@ namespace FinancialAssetsApp.Data.Service
                 .Select(g => new ForChart
                 {
                     Label = g.Key,
-                    Total = g.Sum(e => e.SumStocks) ?? 0m
+                    Total = g.Sum(e => e.SumStocks)
                 })
                 .ToListAsync();
             return data;

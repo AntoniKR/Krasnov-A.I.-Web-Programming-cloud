@@ -24,7 +24,7 @@ namespace FinancialAssetsApp.Data.Service
             if (existMetal != null) // если такой металл есть, то усредняем, иначе добавляем новый
             {
                 var totalAmount = existMetal.AmountMetal + metal.AmountMetal;   
-                existMetal.Price = (existMetal.SumMetals + metal.SumMetals) / totalAmount;
+                existMetal.Price = Math.Round((existMetal.SumMetals + metal.SumMetals) / totalAmount, 2);
                 existMetal.AmountMetal = totalAmount;
                 existMetal.SumMetals = existMetal.Price * existMetal.AmountMetal;
                 existMetal.DateAddStock = DateTime.UtcNow;
@@ -72,7 +72,7 @@ namespace FinancialAssetsApp.Data.Service
                 .Select(g => new ForChart
                 {
                     Label = g.Key,
-                    Total = g.Sum(e => e.SumMetals) ?? 0m
+                    Total = g.Sum(e => e.SumMetals)
                 })
                 .ToListAsync();
             return data;

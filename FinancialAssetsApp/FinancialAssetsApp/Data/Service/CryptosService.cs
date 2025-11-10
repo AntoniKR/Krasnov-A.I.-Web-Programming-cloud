@@ -23,15 +23,15 @@ namespace FinancialAssetsApp.Data.Service
             var oldTicker = await _context.Cryptos.FirstOrDefaultAsync
                 (c => c.UserId == crypto.UserId && c.Ticker == crypto.Ticker);
 
-            crypto.SumCrypto = crypto.Price * crypto.AmountCrypto;
-            crypto.SumCryptoToRuble = crypto.SumCrypto * rate;
+            crypto.SumCrypto = Math.Round(crypto.Price * crypto.AmountCrypto, 4);
+            crypto.SumCryptoToRuble = Math.Round(crypto.SumCrypto * rate, 2);
 
 
 
             if (oldTicker != null)   // если уже есть такой тикер в БД, то цену ставим среднюю
             {
-                var totalAmount = Math.Round((oldTicker.AmountCrypto + crypto.AmountCrypto), 2); //Всего крипты
-                oldTicker.Price = Math.Round(((oldTicker.SumCryptoToRuble + crypto.SumCryptoToRuble) / totalAmount), 2);    //Средняя цена покупки
+                var totalAmount = Math.Round((oldTicker.AmountCrypto + crypto.AmountCrypto), 4); //Всего крипты
+                oldTicker.Price = Math.Round(((oldTicker.SumCryptoToRuble + crypto.SumCryptoToRuble) / totalAmount), 4);    //Средняя цена покупки
                 oldTicker.AmountCrypto = totalAmount;
                 oldTicker.SumCrypto = oldTicker.Price * oldTicker.AmountCrypto;
                 oldTicker.SumCryptoToRuble = oldTicker.SumCrypto * rate;

@@ -3,6 +3,7 @@ using System;
 using FinancialAssetsApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FinancialAssetsApp.Migrations
 {
     [DbContext(typeof(FinanceDbContext))]
-    partial class FinanceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251110073238_dfafsf")]
+    partial class dfafsf
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -133,76 +136,6 @@ namespace FinancialAssetsApp.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Metals");
-                });
-
-            modelBuilder.Entity("FinancialAssetsApp.Models.PlatformStartup", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("AmountCompanies")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("DateAddStock")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("NamePlatform")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<decimal?>("SumOfStartups")
-                        .HasColumnType("numeric");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("PlatformsStartups");
-                });
-
-            modelBuilder.Entity("FinancialAssetsApp.Models.Startup", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AmountStock")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("DateAddStock")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("NameCompany")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
-
-                    b.Property<string>("NamePlatform")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal>("SumStocks")
-                        .HasColumnType("numeric");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Startups");
                 });
 
             modelBuilder.Entity("FinancialAssetsApp.Models.Stock", b =>
@@ -331,28 +264,6 @@ namespace FinancialAssetsApp.Migrations
                 {
                     b.HasOne("FinancialAssetsApp.Models.User", "User")
                         .WithMany("Metals")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("FinancialAssetsApp.Models.PlatformStartup", b =>
-                {
-                    b.HasOne("FinancialAssetsApp.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("FinancialAssetsApp.Models.Startup", b =>
-                {
-                    b.HasOne("FinancialAssetsApp.Models.User", "User")
-                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

@@ -26,18 +26,7 @@ namespace FinancialAssetsApp.Controllers
         public async Task<IActionResult> IndexStocks()    // Список всех акций
         {
             var stocks = await _stocksService.GetAssetsByID(CurrentUserId);  // Перечисление всех данных из БД
-
-            foreach (var stock in stocks)
-            {
-                try
-                {
-                    stock.LastPrice = await _assetdata.RUgetStockPrice(stock.Ticker);
-                }
-                catch
-                {
-                    stock.LastPrice = 0;
-                }
-            }
+                        
             return View(stocks);
         }
         public IActionResult Create()   // Страница добавления акции

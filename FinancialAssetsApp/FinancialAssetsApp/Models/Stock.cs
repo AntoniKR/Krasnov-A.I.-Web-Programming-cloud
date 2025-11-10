@@ -14,18 +14,15 @@ namespace FinancialAssetsApp.Models
 
         [Required(ErrorMessage = "Введите цену больше 0,01")]
         [Range(0.01, double.MaxValue, ErrorMessage = "Цена меньше 0!")] //Ограничение на ввод
-        public decimal? Price { get; set; }           // Цена акции
+        public decimal Price { get; set; }           // Цена акции
 
         [Required(ErrorMessage = "Введите количество акции")]
         [Range(1, int.MaxValue, ErrorMessage = "Количество акций должно быть больше 0")] //Ограничение на ввод
-        public int? AmountStock { get; set; }        // Количество акций
-        public decimal? SumStocks { get; set; }        // Стоимость акций
+        public int AmountStock { get; set; }        // Количество акций
+        public decimal SumStocks { get; set; }        // Стоимость акций
         public DateTime DateAddStock { get; set; } = DateTime.UtcNow;    // Время обновления
-
-        [NotMapped] // Без доабвления в бд
-        public decimal LastPrice { get; set; }
         [Required]
         public int UserId { get; set; }
-        public User? User { get; set; }
+        public User? User { get; set; } // Как навигационное свойство, чтобы обращаться к связанным данным не вручную
     }
 }

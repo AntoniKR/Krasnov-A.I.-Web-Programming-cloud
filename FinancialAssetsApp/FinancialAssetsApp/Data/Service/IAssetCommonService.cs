@@ -35,4 +35,9 @@ namespace FinancialAssetsApp.Data.Service
     {
         Task<IEnumerable<ForChart>> GetChartTicker(int userId);
     }
+    public interface IStartupService : IAssetCommonService<Startup>
+    {
+        Task<int> GetPlatformId(string namePlatform);
+        Task<IEnumerable<ForChart>> GetChartTicker(int userId);
+    }
 }

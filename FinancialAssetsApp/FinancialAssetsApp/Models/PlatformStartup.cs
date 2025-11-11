@@ -16,7 +16,6 @@ namespace FinancialAssetsApp.Models
         [Required]
         public int UserId { get; set; }
         public User? User { get; set; }
-        public ICollection<Startup> Startups { get; set; } = new List<Startup>();
 
     }
 }

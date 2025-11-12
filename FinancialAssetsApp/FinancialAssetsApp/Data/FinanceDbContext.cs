@@ -31,7 +31,7 @@ namespace FinancialAssetsApp.Data
 
             modelBuilder.Entity<Startup>()      // Каскадное удаление стартапов, если удалить платформу
                 .HasOne(s => s.PlatformStartup)
-                .WithMany(p => p.Startups)
+                .WithMany()
                 .HasForeignKey(s => s.PlatformStartupId)
                 .OnDelete(DeleteBehavior.Cascade);
         }

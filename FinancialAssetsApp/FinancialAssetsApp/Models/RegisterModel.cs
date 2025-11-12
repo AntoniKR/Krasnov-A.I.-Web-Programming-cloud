@@ -15,6 +15,5 @@ namespace FinancialAssetsApp.Models
         [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage ="пароли не совпадают")]
         public string ConfirmPassword { get; set; }
-
     }
 }

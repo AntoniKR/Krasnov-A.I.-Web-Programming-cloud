@@ -75,7 +75,7 @@ namespace FinancialAssetsApp.Controllers
             if (platform == null || platform.UserId != CurrentUserId)    //Проверка на акции текущего пользователя
                 return NotFound();
             await _platformService.Delete(id);
-            return RedirectToAction();
+            return RedirectToAction("Index");
         }
         public async Task<IActionResult> GetChartT()
         {

@@ -26,8 +26,8 @@ namespace FinancialAssetsApp.Data.Service
                     .ToListAsync(); // Находим стартапы на выбранной платформе
 
                 existPlatform.AmountCompanies = startups.Count;
-                existPlatform.SumOfStartups = startups.
-                    Sum(stup => stup.Price * stup.AmountStock);
+                existPlatform.SumOfStartups = startups
+                    .Sum(sum => sum.SumStocks);
                 existPlatform.DateAddStock = DateTime.UtcNow;
 
                 _context.PlatformStartups.Update(existPlatform);

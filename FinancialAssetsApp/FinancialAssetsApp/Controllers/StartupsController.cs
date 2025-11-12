@@ -27,23 +27,23 @@ namespace FinancialAssetsApp.Controllers
             var startup = await _startupService.GetAssetsByID(CurrentUserId);  // Перечисление всех данных из БД
             return View("IndexStartup", startup);
         }
-        private void FillListPlatforms()    // Метод для списка платформ
+        private async Task FillListPlatforms()    // Метод для заполнения списка добавленных платформ
         {
-            ViewBag.PlatformStartup = new List<SelectListItem>        // Создание списка для выбора платформы
+            var platforms = await _startupService.GetAllPlatforms(CurrentUserId);
+            
+            ViewBag.PlatformStartup = platforms
+                .Select(plms => new SelectListItem
             {
-                new SelectListItem {Value = "BrainBox", Text = "BrainBox"},
-                new SelectListItem {Value = "Zorko", Text = "Zorko"},
-                new SelectListItem {Value = "Поток", Text = "Поток"},
-                new SelectListItem {Value = "Bizmall", Text = "Bizmall"},
-                new SelectListItem {Value = "Zapusk", Text = "Zapusk"},
-                new SelectListItem {Value = "Finmuster", Text = "Finmuster"},
-                new SelectListItem {Value = "Rounds", Text = "Rounds"}
-            };
+                Value = plms.NamePlatform,
+                Text = plms.NamePlatform
+            })
+                .ToList();
+
         }
-        public IActionResult Create()   // Страница добавления акции
+        public async Task<IActionResult> Create()   // Страница добавления акции
         {
 
-            FillListPlatforms();
+            await FillListPlatforms();
             return View("CreateStartup");
         }
         [HttpPost]
@@ -53,7 +53,7 @@ namespace FinancialAssetsApp.Controllers
             startup.PlatformStartupId = await _startupService.GetPlatformId(startup.NamePlatform);
             if (!ModelState.IsValid)
             {
-                FillListPlatforms();
+                await FillListPlatforms();
                 return View("CreateStartup", startup);
             }
             await _startupService.Add(startup);
@@ -75,7 +75,7 @@ namespace FinancialAssetsApp.Controllers
             if (startup == null || startup.UserId != CurrentUserId)    //Проверка на акции текущего пользователя
                 return NotFound();
             await _startupService.Delete(id);
-            return RedirectToAction();
+            return RedirectToAction("Index");
         }
         public async Task<IActionResult> GetChartT()
         {

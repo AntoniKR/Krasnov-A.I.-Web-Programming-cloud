@@ -17,7 +17,7 @@ namespace FinancialAssetsApp.Data.Service
         }
         public async Task Add(Startup startup)  // Добавление стартапа в БД
         {
-            var existstartup = await _context.Startups.FirstOrDefaultAsync(stup => stup.UserId == startup.UserId && stup.PlatformStartupId == startup.PlatformStartupId); //поиск существующего стартапа
+            var existstartup = await _context.Startups.FirstOrDefaultAsync(stup => stup.UserId == startup.UserId && stup.PlatformStartupId == startup.PlatformStartupId && stup.NameCompany == startup.NameCompany); //поиск существующего стартапа
 
             if (existstartup != null) // если такой стартап существует в БД, то изменяем кол-во акций стартапа и сумму, иначе добавляем в БД
             {
@@ -32,8 +32,22 @@ namespace FinancialAssetsApp.Data.Service
             else
             {
                 startup.SumStocks = startup.Price * startup.AmountStock;
-                await _context.Startups.AddAsync(startup);
+                await _context.Startups.AddAsync(startup);          
             }
+            await _context.SaveChangesAsync();  // Асинхронно сохраняем изменения в БД
+
+            var platform = await _context.PlatformStartups.FirstOrDefaultAsync(plt => plt.UserId == startup.UserId && plt.Id == startup.PlatformStartupId); //Находим платформу, добавленную пользователем
+            var startups = await _context.Startups
+                .Where(st => st.UserId == startup.UserId && st.PlatformStartupId == startup.PlatformStartupId)
+                .ToListAsync();     // Находим все стартапы у пользователя на платформе
+
+            platform.SumOfStartups = startups.Sum(s => s.SumStocks);    //Обновляем сумму стартапов на платформе
+
+            if (existstartup == null)
+            {
+                platform.AmountCompanies = startups.Count();    //Обновляем кол-во стартапов на платформе
+            }
+            _context.PlatformStartups.Update(platform);           
             await _context.SaveChangesAsync();  // Асинхронно сохраняем изменения в БД
         }
         public async Task Delete(int id)    //Удаление стартапа
@@ -41,6 +55,12 @@ namespace FinancialAssetsApp.Data.Service
             var startup = await _context.Startups.FindAsync(id);
             if(startup != null)
             {
+                var platform = await _context.PlatformStartups.FirstOrDefaultAsync(plt => plt.UserId == startup.UserId && plt.Id == startup.PlatformStartupId); //Находим платформу, добавленную пользователем
+
+                platform.SumOfStartups -= startup.SumStocks;
+                _context.PlatformStartups.Update(platform);
+                platform.AmountCompanies -= 1;
+                platform.DateAddStock = DateTime.UtcNow;
                 _context.Startups.Remove(startup);
                 await _context.SaveChangesAsync();
             }
@@ -60,6 +80,13 @@ namespace FinancialAssetsApp.Data.Service
         {
             var platform = await _context.PlatformStartups.FirstOrDefaultAsync(name => name.NamePlatform == namePlatform);
             return platform.Id;
+        }
+        public async Task<IEnumerable<PlatformStartup>> GetAllPlatforms(int userId) // Получение списка платформ при создании стартапа
+        {
+            var platforms = await _context.PlatformStartups
+                .Where(s => s.UserId == userId)
+                .ToListAsync();
+            return platforms;
         }
 
 

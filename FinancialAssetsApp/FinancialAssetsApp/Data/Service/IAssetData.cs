@@ -8,5 +8,7 @@
         Task<decimal> GetMetalPrice(string code);    // курс металлов
         Task<decimal> RUgetStockPrice(string ticker);    // курс металлов
         Task<string> GetCurrencyCode(string symbol); // Список валюты с ЦБ РФ
+        Task<List<string>> GetCitiesList(string symbol);    // Список городов России
+
     }
 }

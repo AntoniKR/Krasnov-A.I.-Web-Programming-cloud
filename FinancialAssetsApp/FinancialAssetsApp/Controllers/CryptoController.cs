@@ -27,7 +27,6 @@ namespace FinancialAssetsApp.Controllers
             return Json(tickers);
         }
 
-        
         public async Task<IActionResult> PriceCrypto (string symbol)    //Получение текущей цены крипты
         {
             var price = await _assetdata.GetPriceCrypto(symbol);

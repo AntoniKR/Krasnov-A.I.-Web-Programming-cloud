@@ -126,6 +126,29 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.error("Ошшшшибка", error);
     }
 });                //
+
+document.addEventListener("DOMContentLoaded", () => {
+    const cityInput = document.getElementById("CityInput");
+    if (!cityInput) return;
+
+    $(cityInput).autocomplete({
+        source: async (request, response) => {
+            $.ajax({
+                url: "/RealEstate/ListCities",
+                data: { term: request.term },
+                success: function (data) {
+                    response(data);
+                },
+                error: function (err) {
+                    console.error("Error: ", err);
+                }
+            });
+        },
+        minLength: 1,
+        delay: 200
+    });
+
+});  
 // Текущие цены и диаграмма Валюта           //
 document.addEventListener("DOMContentLoaded", () => {
 

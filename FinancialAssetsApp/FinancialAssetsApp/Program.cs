@@ -27,7 +27,7 @@ namespace FinancialAssetsApp
             builder.Services.AddScoped<ICurrenciesService, CurrenciesService>();
             builder.Services.AddScoped<IPlatformStartupService, PlatformStartupsService>();
             builder.Services.AddScoped<IStartupService, StartupsService>();
-
+            builder.Services.AddScoped<IRealEstateService, RealEstateService>();
 
             builder.Services.AddDistributedMemoryCache();
             builder.Services.AddSession(options =>  // ≈сли сесси€ была без активности 30 минут, то выход

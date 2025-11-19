@@ -16,8 +16,9 @@ namespace FinancialAssetsApp.Models
         [Range(0.0000001, double.MaxValue, ErrorMessage = "Цена меньше 0!")] //Ограничение на ввод
         public decimal Price { get; set; }           // Цена акции
 
-        [Required(ErrorMessage = "Введите количество криптовалюты")]
+        [Required(ErrorMessage = "Введите количество криптовалюты")]        
         [Range(0.000001, double.MaxValue, ErrorMessage = "Количество криптовалюты должно быть больше 0")] //Ограничение на ввод
+        [RegularExpression(@"^\d+(\.\d+)?$", ErrorMessage = "Введите только цифры")]
         public decimal AmountCrypto { get; set; }        // Количество криптовалюты
         public decimal SumCrypto { get; set; }        // Стоимость криптовалюты
         public decimal SumCryptoToRuble { get; set; }        // Стоимость криптовалюты в рублях

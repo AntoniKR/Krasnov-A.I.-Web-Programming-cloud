@@ -1,7 +1,9 @@
 using FinancialAssetsApp.Data;
 using FinancialAssetsApp.Data.Service;
 using FinancialAssetsApp.Models;
+using Microsoft.AspNetCore.Mvc.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace FinancialAssetsApp
@@ -28,6 +30,14 @@ namespace FinancialAssetsApp
             builder.Services.AddScoped<IPlatformStartupService, PlatformStartupsService>();
             builder.Services.AddScoped<IStartupService, StartupsService>();
             builder.Services.AddScoped<IRealEstateService, RealEstateService>();
+
+            builder.Services.AddRazorPages()
+                .AddMvcOptions(options =>
+                {
+                    options.MaxModelValidationErrors = 50;
+                    options.ModelBindingMessageProvider.SetValueIsInvalidAccessor(
+                        _ => "Необходимо ввести данные!");
+                });
 
             builder.Services.AddDistributedMemoryCache();
             builder.Services.AddSession(options =>  // Если сессия была без активности 30 минут, то выход

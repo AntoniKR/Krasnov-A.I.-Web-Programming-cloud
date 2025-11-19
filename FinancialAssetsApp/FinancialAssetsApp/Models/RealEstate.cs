@@ -17,7 +17,7 @@ namespace FinancialAssetsApp.Models
         public decimal Price { get; set; }           // Цена недвижимости
 
         [Required(ErrorMessage = "Введите количество недвижимости")]
-        [Range(100, double.MaxValue, ErrorMessage = "Количество недвижимости должно быть больше 0")] //Ограничение на ввод
+        [Range(1, double.MaxValue, ErrorMessage = "Количество недвижимости должно быть больше 0")] //Ограничение на ввод
         public int AmountEstate { get; set; }        // Количество металла
         public decimal SumEstate { get; set; }        // Стоимость недвижимости
 

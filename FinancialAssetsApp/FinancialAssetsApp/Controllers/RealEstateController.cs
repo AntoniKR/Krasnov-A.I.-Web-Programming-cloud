@@ -22,7 +22,7 @@ namespace FinancialAssetsApp.Controllers
             _assetdata = assetdata;
         }
 
-        public async Task<IActionResult> IndexRealEstate()    // Список всех акций
+        public async Task<IActionResult> IndexEstate()    // Список всей недвижимости
         {
             var realestates = await _realestateService.GetAssetsByID(CurrentUserId);  // Перечисление всех данных из БД
             return View("IndexEstate", realestates);

@@ -31,6 +31,9 @@ namespace FinancialAssetsApp.Data.Service
             var totalCurrencies = await _context.Currencies
                 .Where(s => s.UserId == userId)
                 .SumAsync(e => e.SumCurrencyToRuble);
+            var totalStartups = await _context.Startups
+                .Where(s => s.UserId == userId)
+                .SumAsync(e => e.SumStocks);
             return new List<ForChart>
             {
                 new ForChart{Label = "Акции ₽", Total = totalStocks},
@@ -38,6 +41,7 @@ namespace FinancialAssetsApp.Data.Service
                 new ForChart{Label = "Криптовалюта", Total = totalCrypto},
                 new ForChart{Label = "Металлы", Total = totalMetals},
                 new ForChart{Label = "Валюта", Total = totalCurrencies},
+                new ForChart{Label = "Стартапы", Total = totalStartups},
             };
         }
         public async Task<decimal> GetRate()

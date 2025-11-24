@@ -62,7 +62,7 @@ namespace FinancialAssetsApp
             app.UseStaticFiles();
             app.UseSession();
 
-            app.Use(async (context, next) =>    //Автологин, закомментить, если вход с страницы логина
+            /*app.Use(async (context, next) =>    //Автологин, закомментить, если вход с страницы логина
             {
                 // Если сессия ещё не установлена
                 if (!context.Session.Keys.Contains("User"))
@@ -80,14 +80,14 @@ namespace FinancialAssetsApp
                 }
 
                 await next.Invoke();
-            });
+            });*/
 
             app.UseRouting();
             app.UseAuthorization(); // Авторизация юзера
             app.MapControllerRoute(
                 name: "default",
-                //pattern: "{controller=Account}/{action=Login}/{id?}");    // Раскомментить, если вход с логина
-                pattern: "{controller=Home}/{action=Index}/{id?}");         // Закомменить
+                pattern: "{controller=Account}/{action=Login}/{id?}");    // Раскомментить, если вход с логина
+                //pattern: "{controller=Home}/{action=Index}/{id?}");         // Закомменить
             app.Run();
         }
     }

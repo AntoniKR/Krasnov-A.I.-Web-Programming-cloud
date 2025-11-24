@@ -14,19 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\20250919085217_InitialCreate.cs" />
-    <Compile Remove="Migrations\20250919085217_InitialCreate.Designer.cs" />
-    <Compile Remove="Migrations\20250919110029_InitialCreate1.cs" />
-    <Compile Remove="Migrations\20250919110029_InitialCreate1.Designer.cs" />
-    <Compile Remove="Migrations\20250919110105_InitialCreate2.cs" />
-    <Compile Remove="Migrations\20250919110105_InitialCreate2.Designer.cs" />
-    <Compile Remove="Migrations\20250919110632_InitialCreate3.cs" />
-    <Compile Remove="Migrations\20250919110632_InitialCreate3.Designer.cs" />
-    <Compile Remove="Migrations\20250919111757_InitialCreate4.cs" />
-    <Compile Remove="Migrations\20250919111757_InitialCreate4.Designer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.9" />

@@ -34,16 +34,19 @@ namespace FinancialAssetsApp.Data.Service
     public interface IPlatformStartupService : IAssetCommonService<PlatformStartup>
     {
         Task<IEnumerable<ForChart>> GetChartTicker(int userId);
+        Task<IEnumerable<ForChart>> GetChartCount(int userId);
     }
     public interface IStartupService : IAssetCommonService<Startup>
     {
         Task<int> GetPlatformId(string namePlatform);
         Task<IEnumerable<PlatformStartup>> GetAllPlatforms(int userId);
         Task<IEnumerable<ForChart>> GetChartTicker(int userId);
+        Task<IEnumerable<ForChart>> GetChartCount(int userId);
     }
     public interface IRealEstateService : IAssetCommonService<RealEstate>
     {
-        Task<IEnumerable<ForChart>> GetChartTicker(int userId);
+        Task<IEnumerable<ForChart>> GetChartCities(int userId);
+        Task<IEnumerable<ForChart>> GetChartType(int userId);
 
     }
 }

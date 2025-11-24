@@ -127,6 +127,59 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });                //
 
+// Круговая диаграмма покупки Стартапы         
+fetchJson('/Startups/GetChartT').then(data => {  
+    if (!data) return;
+    createChart('StartupsPie', {
+        type: 'pie',
+        data: {
+            labels: data.map(d => d.label),
+            datasets: [{ data: data.map(d => d.total) }]
+        },
+        options: { responsive: false, maintainAspectRatio: false }
+    });
+});    
+
+// Круговая диаграмма покупки Платформы         
+fetchJson('/PlatformStup/GetChartT').then(data => {
+    if (!data) return;
+    createChart('PlatformsPie', {
+        type: 'pie',
+        data: {
+            labels: data.map(d => d.label),
+            datasets: [{ data: data.map(d => d.total) }]
+        },
+        options: { responsive: false, maintainAspectRatio: false }
+    });
+});    
+
+// Круговая диаграмма покупки Платформы по кол-ву компаний       
+fetchJson('/PlatformStup/GetChartCountComp').then(data => {
+    if (!data) return;
+    createChart('PlatformsCount', {
+        type: 'pie',
+        data: {
+            labels: data.map(d => d.label),
+            datasets: [{ data: data.map(d => d.total) }]
+        },
+        options: { responsive: false, maintainAspectRatio: false }
+    });
+}); 
+
+// Круговая диаграмма покупки Стартапы по кол-ву компаний       
+fetchJson('/Startups/GetChartCountComp').then(data => {
+    if (!data) return;
+    createChart('StartupCountStocks', {
+        type: 'pie',
+        data: {
+            labels: data.map(d => d.label),
+            datasets: [{ data: data.map(d => d.total) }]
+        },
+        options: { responsive: false, maintainAspectRatio: false }
+    });
+}); 
+
+// Список городов
 document.addEventListener("DOMContentLoaded", () => {
     const cityInput = document.getElementById("CityInput");
     if (!cityInput) return;
@@ -148,7 +201,34 @@ document.addEventListener("DOMContentLoaded", () => {
         delay: 200
     });
 
-});  
+});                
+
+// Круговая диаграмма Недвижимость по городам     
+fetchJson('/RealEstate/GetChartC').then(data => {
+    if (!data) return;
+    createChart('CitiesRealEstates', {
+        type: 'pie',
+        data: {
+            labels: data.map(d => d.label),
+            datasets: [{ data: data.map(d => d.total) }]
+        },
+        options: { responsive: false, maintainAspectRatio: false }
+    });
+}); 
+// Круговая диаграмма Недвижимость по типу недвиж.       
+fetchJson('/RealEstate/GetChartT').then(data => {
+    if (!data) return;
+    createChart('TypeRealEstate', {
+        type: 'pie',
+        data: {
+            labels: data.map(d => d.label),
+            datasets: [{ data: data.map(d => d.total) }]
+        },
+        options: { responsive: false, maintainAspectRatio: false }
+    });
+});
+
+
 // Текущие цены и диаграмма Валюта           //
 document.addEventListener("DOMContentLoaded", () => {
 

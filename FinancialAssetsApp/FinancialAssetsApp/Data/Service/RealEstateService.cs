@@ -49,15 +49,28 @@ namespace FinancialAssetsApp.Data.Service
             return realestate;
         }
 
-        public async Task<IEnumerable<ForChart>> GetChartTicker(int userId) //График по акциям
+        public async Task<IEnumerable<ForChart>> GetChartCities(int userId) //График по городам недвижимости
         {
-            var data = await _context.Metals
+            var data = await _context.RealEstates
                 .Where(s => s.UserId == userId)
-                .GroupBy(e => e.NameMetal)
+                .GroupBy(e => e.CityEstate)
                 .Select(g => new ForChart
                 {
                     Label = g.Key,
-                    Total = g.Sum(e => e.SumMetals)
+                    Total = g.Sum(e => e.SumEstate)
+                })
+                .ToListAsync();
+            return data;
+        }
+        public async Task<IEnumerable<ForChart>> GetChartType(int userId) //График по типу недвижимости
+        {
+            var data = await _context.RealEstates
+                .Where(s => s.UserId == userId)
+                .GroupBy(e => e.TypeEstate)
+                .Select(g => new ForChart
+                {
+                    Label = g.Key,
+                    Total = g.Sum(e => e.SumEstate)
                 })
                 .ToListAsync();
             return data;

@@ -82,13 +82,11 @@ namespace FinancialAssetsApp.Controllers
             var data = await _startupService.GetChartTicker(CurrentUserId);
             return Json(data);
         }
-        public async Task<IActionResult> PriceMetal(string nameMetal)   //Получение цены на металлы
+        public async Task<IActionResult> GetChartCountComp()
         {
-            var price = await _assetdata.GetMetalPrice(nameMetal);
-            return Json(price);
+            var data = await _startupService.GetChartCount(CurrentUserId);
+            return Json(data);
         }
-
-
         /*public async Task<IActionResult> FixSums()
         {
             await _stocksService.FixOldStocks();

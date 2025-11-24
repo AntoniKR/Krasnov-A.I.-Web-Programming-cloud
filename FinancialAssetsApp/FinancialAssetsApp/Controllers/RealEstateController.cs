@@ -77,9 +77,14 @@ namespace FinancialAssetsApp.Controllers
             await _realestateService.Delete(id);
             return RedirectToAction("IndexEstate");
         }
+        public async Task<IActionResult> GetChartC()
+        {
+            var data = await _realestateService.GetChartCities(CurrentUserId);
+            return Json(data);
+        }
         public async Task<IActionResult> GetChartT()
         {
-            var data = await _realestateService.GetChartTicker(CurrentUserId);
+            var data = await _realestateService.GetChartType(CurrentUserId);
             return Json(data);
         }
         public async Task<IActionResult> ListCities(string term)   //Получение списка городов

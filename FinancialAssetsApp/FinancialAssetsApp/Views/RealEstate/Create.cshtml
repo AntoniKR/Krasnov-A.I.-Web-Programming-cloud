@@ -14,7 +14,7 @@
         </div>
         <div>
             <label asp-for="CityEstate" class="form-label">Расположение недвижимости *</label>
-            <input asp-for="CityEstate" type="text" pattern="^[a-zA-ZА-ЯЁа-яё]/g+$" id="CityInput" class="form-control" placeholder="Введите названия города недвижимости" />
+            <input asp-for="CityEstate" id="CityInput" class="form-control" placeholder="Введите название города, где расположена ваша недвижимость" />
 
             <span asp-validation-for="TypeEstate" class="text-danger"></span>
         </div>

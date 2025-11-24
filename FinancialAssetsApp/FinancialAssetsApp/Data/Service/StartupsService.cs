@@ -98,13 +98,26 @@ namespace FinancialAssetsApp.Data.Service
 
         public async Task<IEnumerable<ForChart>> GetChartTicker(int userId) //График по акциям
         {
-            var data = await _context.Metals
+            var data = await _context.Startups
                 .Where(s => s.UserId == userId)
-                .GroupBy(e => e.NameMetal)
+                .GroupBy(e => e.NameCompany)
                 .Select(g => new ForChart
                 {
                     Label = g.Key,
-                    Total = g.Sum(e => e.SumMetals)
+                    Total = g.Sum(e => e.SumStocks)
+                })
+                .ToListAsync();
+            return data;
+        }
+        public async Task<IEnumerable<ForChart>> GetChartCount(int userId) //График по акциям
+        {
+            var data = await _context.Startups
+                .Where(s => s.UserId == userId)
+                .GroupBy(e => e.NameCompany)
+                .Select(g => new ForChart
+                {
+                    Label = g.Key,
+                    Total = g.Sum(e => e.AmountStock)
                 })
                 .ToListAsync();
             return data;

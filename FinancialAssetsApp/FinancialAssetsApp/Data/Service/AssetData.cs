@@ -59,7 +59,7 @@ namespace FinancialAssetsApp.Data.Service
                 .ToList();
             return tickers;
         }
-        public async Task<List<string>> GetCitiesList (string symbol)
+        public async Task<List<string>> GetCitiesList (string symbol)   // Получение списка городов России
         {
             var urlCities = "https://raw.githubusercontent.com/pensnarik/russian-cities/master/russian-cities.json";
             var response = await _httpClient.GetStringAsync(urlCities);

@@ -29,7 +29,7 @@ async function fetchJson(url) {
 document.addEventListener("DOMContentLoaded", () => {   
     document.querySelectorAll('input[name="Price"], input[name="AmountCrypto"]').forEach(input => {
         input.addEventListener("input", () => {
-            input.value = input.value.replace(".", ",");
+            input.value = input.value.replace(",", ".");
         });
     });
 });               //

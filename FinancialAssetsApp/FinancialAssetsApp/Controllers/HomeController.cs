@@ -37,6 +37,11 @@ namespace FinancialAssetsApp.Controllers
             var data = await _homeService.GetAssetsSumm(CurrentUserId);
             return Json(data);
         }
+        public async Task<IActionResult> GetETrChart()   //получение общей суммы активов
+        {
+            var data = await _homeService.GetEstateTransSumm(CurrentUserId);
+            return Json(data);
+        }
         public async Task<IActionResult> GetRateContr()
         {
             var data = await _homeService.GetRate();

@@ -92,6 +92,49 @@ fetchJson('/Home/GetAssetsChart').then(data => {
     });
 });
 
+// Круговая диаграмма с недвижимость и транспорт
+fetchJson('/Home/GetETrChart').then(data => {
+    if (!data) return;
+    const totalSum = data.reduce((sum, item) => sum + item.total, 0);
+    createChart('EstateTransportPie', {
+        type: 'pie',
+        data: {
+            labels: data.map(d => d.label),
+            datasets: [{ data: data.map(d => d.total) }]
+        },
+        options: { responsive: false, maintainAspectRatio: false }
+    });
+
+    createChart('SumEstateTransport', {
+        type: 'bar',
+        data: {
+            labels: data.map(d => d.label),
+            datasets: [{
+                label: "Доля в портфеле %",
+                data: data.map(d => ((d.total / totalSum) * 100).toFixed(2)),
+            }]
+        },
+        options: {
+            responsive: false,
+            maintainAspectRatio: false,
+            plugins: {
+                datalabels: {
+                    anchor: 'end',
+                    align: 'top',
+                    offset: -2,
+                    formatter: v => v + "%",
+                    font: { weight: 'bold' },
+                    color: '#000'
+                }
+            }
+        }
+    });
+
+    const summEl = document.getElementById("SummEstTrans");
+    if (summEl) summEl.innerHTML = totalSum.toLocaleString("ru-RU", {
+        style: "currency", currency: "RUB"
+    });
+});
 
 // Курс USD
 async function getUsdRate() {
@@ -202,6 +245,32 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 });                
+
+// Круговая диаграмма Транспорт по типу транспорта     
+fetchJson('/Transport/GetChartTTrans').then(data => {
+    if (!data) return;
+    createChart('TypeTransport', {
+        type: 'pie',
+        data: {
+            labels: data.map(d => d.label),
+            datasets: [{ data: data.map(d => d.total) }]
+        },
+        options: { responsive: false, maintainAspectRatio: false }
+    });
+});
+// Круговая диаграмма Транспорт по сумме транспорта       
+fetchJson('/Transport/GetChartSTrans').then(data => {
+    if (!data) return;
+    createChart('SumOfTransport', {
+        type: 'pie',
+        data: {
+            labels: data.map(d => d.label),
+            datasets: [{ data: data.map(d => d.total) }]
+        },
+        options: { responsive: false, maintainAspectRatio: false }
+    });
+});
+
 
 // Круговая диаграмма Недвижимость по городам     
 fetchJson('/RealEstate/GetChartC').then(data => {

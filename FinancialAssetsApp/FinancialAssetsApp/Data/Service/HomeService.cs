@@ -34,6 +34,7 @@ namespace FinancialAssetsApp.Data.Service
             var totalStartups = await _context.Startups
                 .Where(s => s.UserId == userId)
                 .SumAsync(e => e.SumStocks);
+
             return new List<ForChart>
             {
                 new ForChart{Label = "Акции ₽", Total = totalStocks},
@@ -44,6 +45,23 @@ namespace FinancialAssetsApp.Data.Service
                 new ForChart{Label = "Стартапы", Total = totalStartups},
             };
         }
+
+        public async Task<IEnumerable<ForChart>> GetEstateTransSumm(int userId)
+        {
+            var totalEstate = await _context.RealEstates
+                .Where(s => s.UserId == userId)
+                .SumAsync(e => e.SumEstate);
+            var totalTrans = await _context.Transports
+                .Where(s => s.UserId == userId)
+                .SumAsync(e => e.Price);
+
+            return new List<ForChart>
+            {
+                new ForChart{Label = "Недвижимость", Total = totalEstate},
+                new ForChart{Label = "Транспорт", Total = totalTrans}
+            };
+        }
+
         public async Task<decimal> GetRate()
         {
             return await _assetdata.GetCurrencyRate("USD");

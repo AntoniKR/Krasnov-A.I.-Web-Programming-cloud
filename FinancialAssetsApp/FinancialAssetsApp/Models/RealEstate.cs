@@ -18,7 +18,7 @@ namespace FinancialAssetsApp.Models
 
         [Required(ErrorMessage = "Введите количество недвижимости")]
         [Range(1, double.MaxValue, ErrorMessage = "Количество недвижимости должно быть больше 0")] //Ограничение на ввод
-        public int AmountEstate { get; set; }        // Количество металла
+        public int AmountEstate { get; set; }        // Количество недвижимости
         public decimal SumEstate { get; set; }        // Стоимость недвижимости
 
         public DateTime DateAddStock { get; set; } = DateTime.UtcNow;    // Время обновления

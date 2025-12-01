@@ -48,5 +48,11 @@ namespace FinancialAssetsApp.Data.Service
         Task<IEnumerable<ForChart>> GetChartCities(int userId);
         Task<IEnumerable<ForChart>> GetChartType(int userId);
 
+    }    
+    public interface ITransportService : IAssetCommonService<Transport>
+    {
+        Task<IEnumerable<ForChart>> GetChartTypeTrans(int userId);
+        Task<IEnumerable<ForChart>> GetChartSumTrans(int userId);
+
     }
 }

@@ -17,6 +17,8 @@ namespace FinancialAssetsApp.Data
         public DbSet<Startup> Startups { get; set; } // БД, хранящая стартапы
         public DbSet<PlatformStartup> PlatformStartups { get; set; } // БД, хранящая платформы стартапов
         public DbSet<RealEstate> RealEstates { get; set; } // БД, хранящая недвижимость
+        public DbSet<Transport> Transports { get; set; } // БД, хранящая транспорт
+
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

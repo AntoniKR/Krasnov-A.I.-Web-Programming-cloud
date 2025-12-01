@@ -30,6 +30,7 @@ namespace FinancialAssetsApp
             builder.Services.AddScoped<IPlatformStartupService, PlatformStartupsService>();
             builder.Services.AddScoped<IStartupService, StartupsService>();
             builder.Services.AddScoped<IRealEstateService, RealEstateService>();
+            builder.Services.AddScoped<ITransportService, TransportService>();
 
             builder.Services.AddRazorPages()
                 .AddMvcOptions(options =>

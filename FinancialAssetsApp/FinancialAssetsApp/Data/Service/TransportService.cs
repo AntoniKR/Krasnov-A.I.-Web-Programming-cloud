@@ -9,7 +9,6 @@ namespace FinancialAssetsApp.Data.Service
     public class TransportService : ITransportService
     {
         private readonly FinanceDbContext _context; // БД
-
         public TransportService(FinanceDbContext context)  // Конструктор
         {
             _context = context;

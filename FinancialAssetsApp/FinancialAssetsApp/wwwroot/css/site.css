@@ -20,3 +20,20 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.logout-btn {
+    background: linear-gradient(45deg, #ff4b5c, #d70022);
+    color: white !important;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(255, 60, 60, 0.4);
+    transition: 0.3s;
+}
+
+.logout-btn:hover {
+        background: linear-gradient(45deg, #ff6b7b, #ff002b);
+        box-shadow: 0 6px 16px rgba(255, 60, 60, 0.6);
+        transform: translateY(-2px);
+}

@@ -34,7 +34,7 @@ namespace FinancialAssetsApp.Controllers
                 HttpContext.Session.SetString("User", user.Username);
                 HttpContext.Session.SetInt32("UserId", user.Id);
 
-                return RedirectToAction("IndexStocks", "Stocks");
+                return RedirectToAction("Index", "Home");
             }
 
             //если не совпадает 
@@ -62,14 +62,14 @@ namespace FinancialAssetsApp.Controllers
             HttpContext.Session.SetString("User", user.Username);
             HttpContext.Session.SetInt32("UserId", user.Id);
 
-            return RedirectToAction("IndexStocks", "Stocks");
+            return RedirectToAction("Index", "Home");
         }
         public IActionResult Logout()   //Выход из сессии
         {
             HttpContext.Session.Remove("User");
             HttpContext.Session.Remove("UserId");
 
-            return RedirectToAction("Login");
+            return RedirectToAction("Login", "Account");
         }
 
         [HttpGet]

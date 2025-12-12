@@ -47,6 +47,11 @@ namespace FinancialAssetsApp
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
+
+            builder.Services.AddControllers();
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
+
             var app = builder.Build();
 
             
@@ -60,6 +65,14 @@ namespace FinancialAssetsApp
 
             
             app.UseHttpsRedirection();
+
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
+
+
             app.UseStaticFiles();
             app.UseSession();
 

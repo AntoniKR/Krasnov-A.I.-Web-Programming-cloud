@@ -346,3 +346,8 @@ C:\Users\ant.krasnov\Desktop\study\3 семестр\Web Cloud\Krasnov-A.I.-Web-P
 C:\Users\ant.krasnov\Desktop\study\3 семестр\Web Cloud\Krasnov-A.I.-Web-Programming-cloud\FinancialAssetsApp\FinancialAssetsApp\obj\Debug\net8.0\ref\FinancialAssetsApp.dll
 C:\Users\ant.krasnov\Desktop\study\3 семестр\Web Cloud\Krasnov-A.I.-Web-Programming-cloud\FinancialAssetsApp\FinancialAssetsApp\bin\Debug\net8.0\BCrypt.Net-Next.dll
 C:\Users\ant.krasnov\Desktop\study\3 семестр\Web Cloud\Krasnov-A.I.-Web-Programming-cloud\FinancialAssetsApp\FinancialAssetsApp\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+C:\Users\ant.krasnov\Desktop\study\3 семестр\Web Cloud\Krasnov-A.I.-Web-Programming-cloud\FinancialAssetsApp\FinancialAssetsApp\bin\Debug\net8.0\Microsoft.OpenApi.dll
+C:\Users\ant.krasnov\Desktop\study\3 семестр\Web Cloud\Krasnov-A.I.-Web-Programming-cloud\FinancialAssetsApp\FinancialAssetsApp\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\ant.krasnov\Desktop\study\3 семестр\Web Cloud\Krasnov-A.I.-Web-Programming-cloud\FinancialAssetsApp\FinancialAssetsApp\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\ant.krasnov\Desktop\study\3 семестр\Web Cloud\Krasnov-A.I.-Web-Programming-cloud\FinancialAssetsApp\FinancialAssetsApp\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\ant.krasnov\Desktop\study\3 семестр\Web Cloud\Krasnov-A.I.-Web-Programming-cloud\FinancialAssetsApp\FinancialAssetsApp\obj\Debug\net8.0\FinancialAssetsApp.MvcApplicationPartsAssemblyInfo.cs
